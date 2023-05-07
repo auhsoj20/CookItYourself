@@ -1,5 +1,6 @@
 import logo from './Cooking.png';
 import './App.css';
+import React from 'react';
 
 function App() {
   return (
@@ -20,6 +21,25 @@ function App() {
         </a>
         
       </header>
+      <footer>
+        <table>
+            <td>
+              <tr>
+                Datenschutzerklärung
+              </tr>
+            </td>
+            <td>
+              <tr>
+                Impressum
+              </tr>
+            </td>
+            <td>
+              <tr>
+                Kontakt
+              </tr>
+            </td>
+        </table> 
+      </footer>
     </div>
   );
 }
