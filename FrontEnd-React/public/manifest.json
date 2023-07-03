@@ -1,19 +1,19 @@
 {
   "short_name": "React App",
-  "name": "Create React App Sample",
+  "name": "CookItYourself!",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "cooking.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "cooking_32x32.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "32x32"
     },
     {
-      "src": "logo512.png",
+      "src": "cooking_512x512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
