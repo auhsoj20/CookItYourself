@@ -1,6 +1,7 @@
-import logo from './Cooking.png';
+import logo from './Pictures/Cooking.png';
 import './App.css';
 import React from 'react';
+import testApiCalls from './Components/RestAPI/testApiCalls';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
       </footer>
     </div>
   );
+
 }
 
 export default App;
