@@ -1,9 +1,38 @@
 import logo from './Pictures/Cooking.png';
 import './App.css';
-import React from 'react';
-import testApiCalls from './Components/RestAPI/testApiCalls';
+import React, { useEffect, useState } from 'react';
+import { fetchData } from './Components/RestAPI/api.js'; // Stellen Sie sicher, dass der Pfad zur Datei korrekt ist
 
 function App() {
+
+  const [data, setData] = useState(null);
+
+  const handleApiButtonClick = () => {
+    
+    var apiUrl;
+
+    if (data == null){
+      apiUrl = 'http://127.0.0.1:8000/test';
+    }
+    else{
+      apiUrl = 'http://127.0.0.1:8000/items/1';
+    }
+
+    fetchData(apiUrl)
+      .then((responseData) => {
+        console.log(responseData);
+        setData(responseData);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  useEffect(() => {
+    // Führen Sie den API-Aufruf aus, wenn die Komponente montiert ist
+    handleApiButtonClick();
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -20,8 +49,17 @@ function App() {
         </a>
         &nbsp; verfolgen!
         </a>
-        
+        <button onClick={handleApiButtonClick}>API-Daten abrufen</button>
       </header>
+      {data ? (
+        <div>
+          {/* Hier können Sie die Daten in Ihrer Komponente verwenden */}
+          <h1>Data from API:</h1>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
       <footer>
         <table>
             <td>
