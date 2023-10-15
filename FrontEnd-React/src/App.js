@@ -1,42 +1,54 @@
-import logo from './Pictures/Cooking.png';
 import './App.css';
 import React, { useEffect, useState } from 'react';
-import { fetchData } from './Components/RestAPI/api.js'; // Stellen Sie sicher, dass der Pfad zur Datei korrekt ist
+import { fetchData } from './Components/RestAPI/api.js';
+import Nav from './Components/Nav/Nav.js'; // Importiere die Nav-Komponente aus der separaten Datei
+import MainFooter from './Components/Footer/MainFooter.js';
 
 function App() {
 
   const [data, setData] = useState(null);
+  const [buttonClicked, setButtonClicked] = useState(false);
+  const [variableValue, setVariableValue] = useState(''); // Hier wird der Wert der Variable gespeichert
+  const [activeTab, setActiveTab] = useState(1);
+  const [footerTab, setFooterTab] = useState('');
 
   const handleApiButtonClick = () => {
-    
-    var apiUrl;
+    if (!buttonClicked) {
 
-    if (data == null){
-      apiUrl = 'http://127.0.0.1:8000/test';
-    }
-    else{
-      apiUrl = 'http://127.0.0.1:8000/items/1';
-    }
+      console.log(variableValue);
 
-    fetchData(apiUrl)
-      .then((responseData) => {
-        console.log(responseData);
-        setData(responseData);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      // Führen Sie die API-Anfrage nur aus, wenn der Button noch nicht geklickt wurde
+      var apiUrl;
+  
+      if (variableValue === '') {
+        apiUrl = 'http://127.0.0.1:8000/test';
+      } else {
+        apiUrl = 'http://127.0.0.1:8000/items/' + variableValue;
+      }
+  
+      fetchData(apiUrl)
+        .then((responseData) => {
+          console.log(responseData);
+          setData(responseData);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      //setButtonClicked(true);
+    }
   };
 
   useEffect(() => {
-    // Führen Sie den API-Aufruf aus, wenn die Komponente montiert ist
-    handleApiButtonClick();
-  }, []);
+    // Only run the API call if the button has been clicked
+    if (buttonClicked) {
+      handleApiButtonClick();
+    }
+  }, [buttonClicked]);
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" /> 
+      <Nav activeTab={activeTab} setActiveTab={setActiveTab} />
+      <header className="App-header"> 
         <a>
           Jetzt das Projekt auf &nbsp;
           <a
@@ -52,33 +64,20 @@ function App() {
         <button onClick={handleApiButtonClick}>API-Daten abrufen</button>
       </header>
       {data ? (
-        <div>
-          {/* Hier können Sie die Daten in Ihrer Komponente verwenden */}
-          <h1>Data from API:</h1>
+        <div className="ApiDesign">
+          {/* Hier fügen Sie die Input-Box hinzu */}
+          <input
+            type="text"
+            placeholder="Geben Sie die Variable ein"
+            value={variableValue}
+            onChange={(e) => setVariableValue(e.target.value)}
+          />
           <pre>{JSON.stringify(data, null, 2)}</pre>
         </div>
       ) : (
-        <p>Loading...</p>
+        <p className="ApiDesign">Loading...</p>
       )}
-      <footer>
-        <table>
-            <td>
-              <tr>
-                Datenschutzerklärung
-              </tr>
-            </td>
-            <td>
-              <tr>
-                Impressum
-              </tr>
-            </td>
-            <td>
-              <tr>
-                Kontakt
-              </tr>
-            </td>
-        </table> 
-      </footer>
+      <MainFooter footerTabTab={footerTab} setFooterTab={setFooterTab}/>
     </div>
   );
 

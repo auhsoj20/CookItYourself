@@ -1,19 +1,10 @@
 .App {
   text-align: center;
+  background-color: #282c34;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-  width: 100px;
-  height: auto;
-  padding: 25px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.ApiDesign {
+  background-color: #282c34;
 }
 
 .App-header {

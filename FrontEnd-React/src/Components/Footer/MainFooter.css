@@ -1,0 +1,26 @@
+/* Nav.css */
+
+.Footer {
+    background-color: #333; /* Hintergrundfarbe der Navigationsleiste */
+    padding: 10px 0; /* Innenabstand oben und unten */
+  }
+  
+ .Footer ul {
+    list-style-type: none; /* Entfernt Aufzählungszeichen von der Liste */
+    margin: 0;
+    padding: 0;
+    display: flex; /* Damit die Tabs horizontal angeordnet werden */
+    justify-content: center; /* Zentriert die Tabs horizontal */
+  }
+  
+ .Footer li {
+    margin: 0 15px; /* Abstand zwischen den Tabs */
+    cursor: pointer; /* Zeigt den Zeiger als Zeigefinger an, um anzuzeigen, dass es klickbar ist */
+    color: #fff; /* Textfarbe der Tabs */
+    font-weight: bold; /* Fettschrift für die Tabs */
+    transition: color 0.3s; /* Animiert die Textfarbe beim Überfahren mit der Maus */
+  }
+
+  .Footer  li.active {
+    color: #ff5733; /* Textfarbe für den aktiven Tab */
+  }
