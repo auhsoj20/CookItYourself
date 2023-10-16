@@ -7,6 +7,7 @@ import MainFooter from './Components/Footer/MainFooter.js';
 function App() {
 
   const [data, setData] = useState(null);
+  // eslint-disable-next-line
   const [buttonClicked, setButtonClicked] = useState(false);
   const [variableValue, setVariableValue] = useState(''); // Hier wird der Wert der Variable gespeichert
   const [activeTab, setActiveTab] = useState(1);
@@ -21,9 +22,9 @@ function App() {
       var apiUrl;
   
       if (variableValue === '') {
-        apiUrl = 'http://127.0.0.1:8000/test';
+        apiUrl = 'http://localhost:8000/test';
       } else {
-        apiUrl = 'http://127.0.0.1:8000/items/' + variableValue;
+        apiUrl = 'http://localhost:8000/items/' + variableValue;
       }
   
       fetchData(apiUrl)
@@ -46,13 +47,14 @@ function App() {
   }, [buttonClicked]);
 
   return (
+// eslint-disable-next-line 
     <div className="App">
       <Nav activeTab={activeTab} setActiveTab={setActiveTab} />
-      <header className="App-header"> 
+      <header className="App-header">
         <a>
           Jetzt das Projekt auf &nbsp;
           <a
-          className="App-link"
+          className="App-link" 
           href="https://github.com/auhsoj20/CookItYourself/"
           target="_blank"
           rel="noopener noreferrer"
