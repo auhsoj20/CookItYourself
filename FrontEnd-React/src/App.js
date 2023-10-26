@@ -54,7 +54,8 @@ function App() {
         <a>
           Jetzt das Projekt auf &nbsp;
           <a
-          className="App-link" 
+          className="App-link" #
+          
           href="https://github.com/auhsoj20/CookItYourself/"
           target="_blank"
           rel="noopener noreferrer"
