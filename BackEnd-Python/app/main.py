@@ -6,12 +6,12 @@ from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
 
 db = mysql.connector.connect(
-    host="localhost", 
+    host="192.168.10.60", 
     port="3306",
     user="root",
     charset="utf8mb4",
     database="cookityourself", 
-    password="")
+    password="root_password")
     
 app = FastAPI()
 
@@ -27,7 +27,7 @@ app.add_middleware(
 @app.get("/")
 def read_root():
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM your_table_name")
+    cursor.execute("SELECT * FROM usertable")
     result = cursor.fetchall()
     cursor.close()
     return result
