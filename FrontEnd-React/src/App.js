@@ -51,19 +51,18 @@ function App() {
     <div className="App">
       <Nav activeTab={activeTab} setActiveTab={setActiveTab} />
       <header className="App-header">
-        <a>
+        <div>
           Jetzt das Projekt auf &nbsp;
-          <a
+          <div
           className="App-link"
-          
           href="https://github.com/auhsoj20/CookItYourself/"
           target="_blank"
           rel="noopener noreferrer"
         >
           Github 
-        </a>
+        </div>
         &nbsp; verfolgen!
-        </a>
+        </div>
         <button onClick={handleApiButtonClick}>API-Daten abrufen</button>
       </header>
       {data ? (
