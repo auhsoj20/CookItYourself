@@ -53,14 +53,14 @@ function App() {
       <header className="App-header">
         <div>
           Jetzt das Projekt auf &nbsp;
-          <div
+          <a
           className="App-link"
           href="https://github.com/auhsoj20/CookItYourself/"
           target="_blank"
           rel="noopener noreferrer"
         >
           Github 
-        </div>
+        </a>
         &nbsp; verfolgen!
         </div>
         <button onClick={handleApiButtonClick}>API-Daten abrufen</button>
