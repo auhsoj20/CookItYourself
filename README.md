@@ -10,16 +10,16 @@ Software zum Austausch von Essensrezepten
 
     a. NodeJS
 
-        - https://nodejs.org/en/download/current
-        - Windows Installler (.msi)
+    - https://nodejs.org/en/download/current
+    - Windows Installler (.msi)
 
     b. React-Scripts
 
-        - https://www.npmjs.com/package/react-scripts
+    - https://www.npmjs.com/package/react-scripts
 
-        oder
+    oder
 
-        - Befehl "npm install -g react-scripts"
+    - Befehl "npm install -g react-scripts"
 
     c. Python
 
@@ -27,6 +27,6 @@ Software zum Austausch von Essensrezepten
 
     d. MySQLConnector Python
 
-        - pip install mysql-connector-python
-        - https://pypi.org/project/mysql-connector-python/
+    - pip install mysql-connector-python
+     - https://pypi.org/project/mysql-connector-python/
 
