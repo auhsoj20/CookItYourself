@@ -3,6 +3,3 @@ python -m uvicorn main:app --reload
 
 Mac OS & Linux
 python3 -m uvicorn main:app --reload
-
-
-test Pull-Request
