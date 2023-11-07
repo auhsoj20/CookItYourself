@@ -2,13 +2,14 @@
 import React from 'react';
 import './Nav.css';
 import logo from '../../Pictures/Cooking.png';
+import { Link } from 'react-router-dom';
 
 // Erstelle die Nav-Komponente
 function Nav({ activeTab, setActiveTab }) {
   return (
     <nav className="Nav">
       <button onClick={() => setActiveTab(0)} className="logo-button">
-        <img src={logo} className="App-logo" alt="logo" />
+          <img src={logo} className="App-logo" alt="logo" />
       </button>
       <ul>
         <li
