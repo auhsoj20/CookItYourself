@@ -1,13 +1,13 @@
-function NoPage() {
+function ImprintMain() {
 
     return(
         <div className="App">
             <div className="NoPage">
-                404 - No Page Found
+                Impressum Seite
             </div>
         </div>
     )
 
 }
 
-export default NoPage;
+export default ImprintMain;

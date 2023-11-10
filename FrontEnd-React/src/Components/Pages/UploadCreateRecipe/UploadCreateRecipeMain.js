@@ -1,13 +1,13 @@
-function NoPage() {
+function UploadCreateRecipeMain() {
 
     return(
         <div className="App">
             <div className="NoPage">
-                404 - No Page Found
+                Rezept hochladen/erstellen
             </div>
         </div>
     )
 
 }
 
-export default NoPage;
+export default UploadCreateRecipeMain;

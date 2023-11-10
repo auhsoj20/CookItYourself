@@ -1,13 +1,13 @@
-function NoPage() {
+function ContactMain() {
 
     return(
         <div className="App">
             <div className="NoPage">
-                404 - No Page Found
+                Kontakt Seite
             </div>
         </div>
     )
 
 }
 
-export default NoPage;
+export default ContactMain;

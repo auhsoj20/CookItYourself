@@ -1,13 +1,13 @@
-function NoPage() {
+function SearchRecipesMain() {
 
     return(
         <div className="App">
             <div className="NoPage">
-                404 - No Page Found
+                Rezepte suchen
             </div>
         </div>
     )
 
 }
 
-export default NoPage;
+export default SearchRecipesMain;

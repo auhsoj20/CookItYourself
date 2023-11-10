@@ -1,13 +1,13 @@
-function NoPage() {
+function PrivacyPolicyMain() {
 
     return(
         <div className="App">
             <div className="NoPage">
-                404 - No Page Found
+                Datenschutzerklärungen
             </div>
         </div>
     )
 
 }
 
-export default NoPage;
+export default PrivacyPolicyMain;

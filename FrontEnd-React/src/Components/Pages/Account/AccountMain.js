@@ -1,13 +1,13 @@
-function NoPage() {
+function AccountMain() {
 
     return(
         <div className="App">
             <div className="NoPage">
-                404 - No Page Found
+                Account Managment
             </div>
         </div>
     )
 
 }
 
-export default NoPage;
+export default AccountMain;
