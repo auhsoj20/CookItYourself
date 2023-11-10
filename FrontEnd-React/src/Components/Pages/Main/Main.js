@@ -1,6 +1,7 @@
 // Importiere die erforderlichen Abhängigkeiten
 import React, { useEffect, useState } from 'react';
 import { fetchData } from '../../RestAPI/api.js';
+import { Outlet, Link } from "react-router-dom";
 
 // Erstelle die Nav-Komponente
 function MainPage() {
@@ -44,7 +45,7 @@ function MainPage() {
   }, [buttonClicked]);
 
   return (
-    <div>
+    <div className="ApiBackground">
         <header className="App-header">
         <div>
           Jetzt das Projekt auf &nbsp;
@@ -61,7 +62,7 @@ function MainPage() {
         <button onClick={handleApiButtonClick}>API-Daten abrufen</button>
       </header>
       {data ? (
-        <div className="ApiDesign">
+        <div>
           {/* Hier fügen Sie die Input-Box hinzu */}
           <input
             type="text"

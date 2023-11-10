@@ -1,7 +1,8 @@
-/* Nav.css */
+
 
 .Nav {
     background-color: #333; /* Hintergrundfarbe der Navigationsleiste */
+    text-align: center;
     padding: 10px 0; /* Innenabstand oben und unten */
   }
   
@@ -11,27 +12,44 @@
     padding: 0;
     display: flex; /* Damit die Tabs horizontal angeordnet werden */
     justify-content: center; /* Zentriert die Tabs horizontal */
+    text-decoration: none;
   }
 
-.Nav  li {
+.Nav  li a{
     margin: 0 15px; /* Abstand zwischen den Tabs */
     cursor: pointer; /* Zeigt den Zeiger als Zeigefinger an, um anzuzeigen, dass es klickbar ist */
     color: #fff; /* Textfarbe der Tabs */
     font-weight: bold; /* Fettschrift für die Tabs */
     transition: color 0.3s; /* Animiert die Textfarbe beim Überfahren mit der Maus */
+    text-decoration: none;
   }
 
-.Nav  li.active {
+.Nav li a:hover {
+  color: #ff5733; /* Textfarbe für den aktiven Tab */
+}
+
+.Nav  li a.active {
     color: #ff5733; /* Textfarbe für den aktiven Tab */
   }
-  
+  /*
 .App-logo {
+
+
     height: 40vmin;
     pointer-events: none;
     width: 60px;
     height: auto;
     padding: 25px;
+  }*/
+
+  .App-logo {
+    width: 60px;
+    height: auto;
+    left: 50%;
+    pointer-events: none;
+    padding: 25px;
   }
+  
   
   @media (prefers-reduced-motion: no-preference) {
     .App-logo {
@@ -46,3 +64,4 @@
   padding: 0;
   cursor: pointer;
 };
+
