@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchData } from '../../RestAPI/api.js';
 
-// Erstelle die Nav-Komponente
+// Erstelle die Nav-Komponente 
 function MainPage() {
 
   const [data, setData] = useState(null);
@@ -44,7 +44,7 @@ function MainPage() {
   }, [buttonClicked]);
 
   return (
-    <div>
+    <div className="App">
         <header className="App-header">
         <div>
           Jetzt das Projekt auf &nbsp;
@@ -61,8 +61,7 @@ function MainPage() {
         <button onClick={handleApiButtonClick}>API-Daten abrufen</button>
       </header>
       {data ? (
-        <div className="ApiDesign">
-          {/* Hier fügen Sie die Input-Box hinzu */}
+        <div>
           <input
             type="text"
             placeholder="Geben Sie die Variable ein"
@@ -72,7 +71,7 @@ function MainPage() {
           <pre>{JSON.stringify(data, null, 2)}</pre>
         </div>
       ) : (
-        <p className="ApiDesign">Waiting for Action!</p>
+        <p className="ApiDesign">Waiting for API Action!</p>
       )}
     </div>
   );

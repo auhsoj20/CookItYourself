@@ -8,27 +8,41 @@ import { Link } from 'react-router-dom';
 function Nav({ activeTab, setActiveTab }) {
   return (
     <nav className="Nav">
-      <button onClick={() => setActiveTab(0)} className="logo-button">
-          <img src={logo} className="App-logo" alt="logo" />
-      </button>
+      <ul>
+        <li>
+        <Link to="/">  
+          <button onClick={() => setActiveTab(0)} className="logo-button">
+              
+                <img src={logo} className="App-logo" alt="logo" />
+
+          </button>
+        </Link>          
+        </li>
+      </ul>
       <ul>
         <li
           className={activeTab === 1 ? 'active' : ''}
           onClick={() => setActiveTab(1)}
         >
+          <Link to="/Search_Recipes">
           Rezepte suchen
+          </Link>
         </li>
         <li
           className={activeTab === 2 ? 'active' : ''}
           onClick={() => setActiveTab(2)}
         >
+          <Link to="Upload_Create_Recipe">
           Rezept hochladen/erstellen
+          </Link>
         </li>
         <li
           className={activeTab === 3 ? 'active' : ''}
           onClick={() => setActiveTab(3)}
         >
+          <Link to="/account">
           Konto
+          </Link>
         </li>
       </ul>
     </nav>
