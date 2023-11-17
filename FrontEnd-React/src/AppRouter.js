@@ -28,6 +28,7 @@ function AppRouter() {
             <Route path="/Imprint" element={<Imprint />} />   
             <Route path="/Contact" element={<Contact />} />
             <Route path="/Privacy_policy" element={<PrivacyPolicy />} />
+            
             <Route path="*" element={<NoPage />} />  
           </Routes>
         <MainFooter footerTab={footerTab} setFooterTab={setFooterTab}/>
