@@ -7,6 +7,7 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "eslint-plugin-react-hooks": "^5.0.0-canary-ce2bc58a9-20231102",
+    "latest": "^0.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.18.0",
@@ -38,5 +39,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://127.0.0.1:8000"
+  "proxy": "http://127.0.0.1:8000",
+  "devDependencies": {
+    "eslint": "^8.56.0"
+  }
 }
