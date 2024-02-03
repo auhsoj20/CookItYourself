@@ -3,7 +3,7 @@ function AccountMain() {
     return(
         <div className="App">
             <div className="NoPage">
-                Account Managment
+                Account Verwaltung
             </div>
         </div>
     )
