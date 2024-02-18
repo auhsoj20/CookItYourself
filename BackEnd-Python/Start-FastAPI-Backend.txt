@@ -3,3 +3,5 @@ python -m uvicorn main:app --reload
 
 Mac OS & Linux
 python3 -m uvicorn main:app --reload
+
+Initialpassword: BackEnd-User !123456789A

@@ -78,8 +78,9 @@ function SearchRecipesMain() {
         marginTop: '20px',
         marginLeft: '5% auto',
         marginRight: '5% auto'
+        
       };
-          
+
       const thStyle = {
         backgroundColor: '#888', // Grauer Hintergrund für den Header
         color: 'black',
