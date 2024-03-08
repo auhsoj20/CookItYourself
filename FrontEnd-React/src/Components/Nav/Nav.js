@@ -10,16 +10,14 @@ function Nav({ activeTab, setActiveTab }) {
     <nav className="Nav">
       <ul>
         <li>
-        <Link to="/">  
-          <button onClick={() => setActiveTab(0)} className="logo-button">
-              
-                <img src={logo} className="App-logo" alt="logo" />
+          <Link to="/">  
+            <button onClick={() => setActiveTab(0)} className="logo-button">
+                
+              <img src={logo} className="App-logo" alt="logo" />
 
-          </button>
-        </Link>          
+            </button>
+          </Link>          
         </li>
-      </ul>
-      <ul>
         <li
           className={activeTab === 1 ? 'active' : ''}
           onClick={() => setActiveTab(1)}

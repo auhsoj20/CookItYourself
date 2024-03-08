@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 
 function UploadCreateRecipeMain() {
 
-    const [rows, setRows] = useState([{ id: 1, name: '' }]);
+    const [rows, setRows] = useState([{ recipe_id: 1, name: '' }]);
     const maxRows = 5; // Maximale Anzahl von Zeilen
 
     const handleAddRow = () => {
         if (rows.length < maxRows) {
-            const newRow = { id: rows.length + 1, name: '' };
+            const newRow = { recipe_id: rows.length + 1, name: '' };
             setRows([...rows, newRow]);
         }
     };
@@ -24,6 +24,7 @@ function UploadCreateRecipeMain() {
             <div>
                 <table>
                     <thead>
+                        
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
@@ -31,8 +32,8 @@ function UploadCreateRecipeMain() {
                     </thead>
                     <tbody>
                         {rows.map((row, index) => (
-                            <tr key={row.id}>
-                                <td>{row.id}</td>
+                            <tr key={row.recipe_id}>
+                                <td>{row.recipe_id}</td>
                                 <td>
                                     <input
                                         type="text"
