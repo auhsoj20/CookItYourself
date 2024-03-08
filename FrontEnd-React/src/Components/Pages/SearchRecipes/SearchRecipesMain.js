@@ -1,17 +1,23 @@
 // Importiere die erforderlichen Abhängigkeiten
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { fetchData } from '../../RestAPI/api.js';
+import LoadingScreen from '../../Functions/LoadingScreen/LoadingScreen.js';
 
 function SearchRecipesMain() {
 
     const [header_data, set_header_Data] = useState(null);
     const [ingredients_data, set_ingredients_Data] = useState(null);
+    const [cookingsteps_data, set_cookingsteps_Data] = useState(null);
     // eslint-disable-next-line
     const [buttonClicked, setButtonClicked] = useState(false);
     const [variableValue, setVariableValue] = useState(''); // Hier wird der Wert der Variable gespeichert
+    const [showData, setShowData] = useState(false);
+    const [showLoadingScreen, setShowLoadingScreen] = useState(false);
 
     const handleApiButtonClick = async () => {
         if (!buttonClicked) {
+
+          setShowLoadingScreen(true);
     
           console.log(variableValue);
     
@@ -44,7 +50,25 @@ function SearchRecipesMain() {
             });
 
             console.log('Ingredients');
-            
+
+          var apiUrl_cookingsteps;
+
+            apiUrl_cookingsteps = 'http://localhost:8000/recipe_cookingsteps/' + variableValue;
+
+            await fetchData(apiUrl_cookingsteps)
+                .then((responseData) => {
+                    console.log(responseData);
+                    set_cookingsteps_Data(responseData);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+
+            console.log('Cookingsteps');
+
+            setShowData(true);
+            setShowLoadingScreen(false);
+
         }
       };
 
@@ -52,8 +76,11 @@ function SearchRecipesMain() {
         width: '100%',
         borderCollapse: 'collapse',
         marginTop: '20px',
+        marginLeft: '5% auto',
+        marginRight: '5% auto'
+        
       };
-    
+
       const thStyle = {
         backgroundColor: '#888', // Grauer Hintergrund für den Header
         color: 'black',
@@ -64,7 +91,6 @@ function SearchRecipesMain() {
     
       const tdStyle = {
         padding: '8px',
-        textAlign: 'left',
         backgroundColor: 'white',
         textAlign: 'center',
       };  
@@ -77,7 +103,7 @@ function SearchRecipesMain() {
       };
 
     return(
-        <div className="App">
+        <div className="body">
             <div className="NoPage">
                 <button onClick={handleApiButtonClick}
                  style={{ marginTop: '20px' }}> 
@@ -92,6 +118,8 @@ function SearchRecipesMain() {
                              textAlign: 'center', }}
                 />
             </div>
+            { showData ? (
+                <div>
             <div style={divStyle}>
                 Merkmale                
             </div>
@@ -147,11 +175,48 @@ function SearchRecipesMain() {
                 </table>
             ) : (
                 <p>Keine Daten vorhanden.</p>
-            )} 
-            
+            )}
 
-        </div>
-    )
+            <div style={divStyle}>
+                Schritte
+            </div>
+            {cookingsteps_data && cookingsteps_data.length > 0 ? (
+                <table border="1" style={tableStyle}>
+                    <thead>
+                    <tr>
+                        <th style={thStyle}>Rezept ID</th>
+                        <th style={thStyle}>Schritt ID</th>
+                        <th style={thStyle}>Beschreibung</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {cookingsteps_data.map((row, index) => (
+                        <tr key={index}>
+                            {row.map((cell, cellIndex) => (
+                                <td style={tdStyle} key={cellIndex}>{cell}</td>
+                            ))}
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            ) : (
+                <p>Keine Daten vorhanden.</p>
+            )}
+                </div>        ) : (
+
+                    <div>
+
+                { showLoadingScreen ? ( <LoadingScreen />
+
+                    ) : ( <div></div> ) }
+
+                    </div>
+
+
+            ) }
+
+        </div> )
+
 
 }
 

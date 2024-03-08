@@ -8,10 +8,10 @@ import mysql.connector
 db = mysql.connector.connect(
     host="192.168.10.60", 
     port="3306",
-    user="root",
+    user="BE-Serviceuser",
     charset="utf8mb4",
     database="cookityourself", 
-    password="root_password")
+    password="!123456789A")
     
 app = FastAPI()
 
@@ -59,18 +59,18 @@ def read_item(recipe_id: int):
     cursor.close()
     return result
 
-@app.get("/recipe_ingredients/{recipe_id}")
-def read_item(recipe_id: int):
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM recipe_ingredients WHERE recipe_id = " + str(recipe_id))
-    result = cursor.fetchall()
-    cursor.close()
-    return result
-
 @app.get("/recipe_header/")
 def read_root():
     cursor = db.cursor()
     cursor.execute("SELECT * FROM recipe_header")
+    result = cursor.fetchall()
+    cursor.close()
+    return result
+
+@app.get("/recipe_ingredients/{recipe_id}")
+def read_item(recipe_id: int):
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM recipe_ingredients WHERE recipe_id = " + str(recipe_id))
     result = cursor.fetchall()
     cursor.close()
     return result
@@ -83,3 +83,18 @@ def read_root():
     cursor.close()
     return result
 
+@app.get("/recipe_cookingsteps/{recipe_id}")
+def read_item(recipe_id: int):
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM recipe_cookingsteps WHERE recipe_id = " + str(recipe_id))
+    result = cursor.fetchall()
+    cursor.close()
+    return result
+
+@app.get("/recipe_cookingsteps/")
+def read_root():
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM recipe_cookingsteps")
+    result = cursor.fetchall()
+    cursor.close()
+    return result

@@ -13,10 +13,12 @@
     display: flex; /* Damit die Tabs horizontal angeordnet werden */
     justify-content: center; /* Zentriert die Tabs horizontal */
     text-decoration: none;
+    align-items: center;
   }
 
 .Nav  li a{
     margin: 0 15px; /* Abstand zwischen den Tabs */
+    padding-top: 15px;
     cursor: pointer; /* Zeigt den Zeiger als Zeigefinger an, um anzuzeigen, dass es klickbar ist */
     color: #fff; /* Textfarbe der Tabs */
     font-weight: bold; /* Fettschrift für die Tabs */
@@ -43,11 +45,11 @@
   }*/
 
   .App-logo {
-    width: 60px;
+    width: 37px;
     height: auto;
     left: 50%;
     pointer-events: none;
-    padding: 25px;
+    padding: 3px;
   }
   
   

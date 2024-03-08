@@ -1,5 +1,4 @@
 import './App.css';
-import ReactDOM from "react-dom/client";
 import React, { useState } from 'react';
 import Nav from './Components/Nav/Nav.js'; // Importiere die Nav-Komponente aus der separaten Datei
 import MainFooter from './Components/Footer/MainFooter.js';
@@ -11,7 +10,7 @@ import Imprint from './Components/Pages/Imprint/ImprintMain.js';
 import PrivacyPolicy from './Components/Pages/PrivacyPolicy/PrivacyPolicyMain.js';
 import SearchRecipes from './Components/Pages/SearchRecipes/SearchRecipesMain.js';
 import UploadCreateRecipe from './Components/Pages/UploadCreateRecipe/UploadCreateRecipeMain.js';
-import { BrowserRouter, Routes, Route, Router } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function AppRouter() {
   const [activeTab, setActiveTab] = useState(0);

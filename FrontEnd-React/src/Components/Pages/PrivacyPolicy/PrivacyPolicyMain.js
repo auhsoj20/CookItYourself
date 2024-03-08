@@ -1,7 +1,7 @@
 function PrivacyPolicyMain() {
 
     return(
-        <div className="App">
+        <div className="body">
             <div className="NoPage">
                 Datenschutzerklärungen
             </div>

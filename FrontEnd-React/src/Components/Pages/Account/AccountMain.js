@@ -1,7 +1,7 @@
 function AccountMain() {
 
     return(
-        <div className="App">
+        <div className="body">
             <div className="NoPage">
                 Account Verwaltung
             </div>
