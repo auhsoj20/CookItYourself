@@ -44,7 +44,7 @@ function MainPage() {
   }, [buttonClicked]);
 
   return (
-    <div className="App">
+    <div className="body">
         <header className="App-header">
         <div>
           Jetzt das Projekt auf &nbsp;

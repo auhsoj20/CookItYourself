@@ -20,7 +20,7 @@ function UploadCreateRecipeMain() {
     };
 
     return(
-        <div className="App">
+        <div className="body">
             <div>
                 <table>
                     <thead>

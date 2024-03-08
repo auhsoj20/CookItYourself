@@ -6,6 +6,12 @@ import { Link } from 'react-router-dom';
 
 // Erstelle die Nav-Komponente
 function Nav({ activeTab, setActiveTab }) {
+
+  function toggleTheme() {
+    const body = document.body;
+    body.classList.toggle("dark-theme");
+  }
+
   return (
     <nav className="Nav">
       <ul>
@@ -41,6 +47,12 @@ function Nav({ activeTab, setActiveTab }) {
           <Link to="/account">
           Konto
           </Link>
+        </li>
+        <li className="theme-switch">
+          <label className="switch">
+            <input type="checkbox" onClick={toggleTheme} />
+            <span className="slider round"></span>
+          </label>
         </li>
       </ul>
     </nav>

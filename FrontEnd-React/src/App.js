@@ -9,7 +9,7 @@ function App() {
   const [activeTab, setActiveTab] = useState(0);
   const [footerTab, setFooterTab] = useState(0);
   return (
-    <div className="App">
+    <div className="body">
       {/* Navigationsleiste */}
       <Nav activeTab={activeTab} setActiveTab={setActiveTab} />
       <MainPage />

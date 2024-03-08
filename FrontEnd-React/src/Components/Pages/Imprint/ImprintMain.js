@@ -1,7 +1,7 @@
 function ImprintMain() {
 
     return(
-        <div className="App">
+        <div className="body">
             <div className="NoPage">
                 Impressum Seite
             </div>

@@ -103,7 +103,7 @@ function SearchRecipesMain() {
       };
 
     return(
-        <div className="App">
+        <div className="body">
             <div className="NoPage">
                 <button onClick={handleApiButtonClick}
                  style={{ marginTop: '20px' }}> 

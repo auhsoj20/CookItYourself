@@ -1,7 +1,7 @@
 function ContactMain() {
 
     return(
-        <div className="App">
+        <div className="body">
             <div className="NoPage">
                 Kontakt Seite
             </div>
