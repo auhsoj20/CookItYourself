@@ -76,9 +76,7 @@ function SearchRecipesMain() {
         width: '100%',
         borderCollapse: 'collapse',
         marginTop: '20px',
-        marginLeft: '5% auto',
-        marginRight: '5% auto'
-        
+        right: '15px',
       };
 
       const thStyle = {
@@ -93,6 +91,7 @@ function SearchRecipesMain() {
         padding: '8px',
         backgroundColor: 'white',
         textAlign: 'center',
+        color: 'black',
       };  
 
       const divStyle = {
@@ -124,7 +123,7 @@ function SearchRecipesMain() {
                 Merkmale                
             </div>
             { header_data && header_data.length > 0 ? (
-                <table border="1"
+                <table 
                 style={tableStyle}>
                 <thead>
                     <tr>
@@ -216,7 +215,6 @@ function SearchRecipesMain() {
             ) }
 
         </div> )
-
 
 }
 
