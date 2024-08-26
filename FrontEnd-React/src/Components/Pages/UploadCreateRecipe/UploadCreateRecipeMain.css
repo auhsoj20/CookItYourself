@@ -1,0 +1,64 @@
+/* Hauptcontainer für den gesamten Inhalt */
+.body_UploadCreateRecipe {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.37);
+    max-width: 600px;
+    margin: auto;
+}
+
+/* Tabelle */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Tabellenkopf */
+thead th {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Tabellenzeilen */
+tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+tbody td {
+    padding: 10px;
+    text-align: center;
+}
+
+/* Eingabefeld */
+input[type="text"] {
+    width: 90%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+/* Button */
+.UCRP_add_row_button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+.UCRP_add_row_button:hover {
+    background-color: #218838;
+}
+
+.UCRP_add_row_button:focus {
+    outline: none;
+}

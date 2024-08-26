@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import './UploadCreateRecipeMain.css'; // Importiere das CSS
 
 function UploadCreateRecipeMain() {
 
     const [rows, setRows] = useState([{ recipe_id: 1, name: '' }]);
-    const maxRows = 5; // Maximale Anzahl von Zeilen
+    const maxRows = 5;
 
     const handleAddRow = () => {
         if (rows.length < maxRows) {
@@ -19,12 +20,11 @@ function UploadCreateRecipeMain() {
         setRows(newRows);
     };
 
-    return(
-        <div className="body">
+    return (
+        <div className="body_UploadCreateRecipe">
             <div>
                 <table>
                     <thead>
-                        
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
@@ -47,12 +47,11 @@ function UploadCreateRecipeMain() {
                     </tbody>
                 </table>
                 {rows.length < maxRows && (
-                    <button onClick={handleAddRow}>Zeile hinzufügen</button>
+                    <button className="UCRP_add_row_button" onClick={handleAddRow}>Zeile hinzufügen</button>
                 )}
             </div>
         </div>
-    )
-
+    );
 }
 
 export default UploadCreateRecipeMain;
