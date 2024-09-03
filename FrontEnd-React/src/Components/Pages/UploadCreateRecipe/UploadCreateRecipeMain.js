@@ -22,33 +22,35 @@ function UploadCreateRecipeMain() {
 
     return (
         <div className="body_UploadCreateRecipe">
-            <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows.map((row, index) => (
-                            <tr key={row.recipe_id}>
-                                <td>{row.recipe_id}</td>
-                                <td>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={row.name}
-                                        onChange={(e) => handleInputChange(index, e)}
-                                    />
-                                </td>
+            <div className="page_UploadCreateRecipe">
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-                {rows.length < maxRows && (
-                    <button className="UCRP_add_row_button" onClick={handleAddRow}>Zeile hinzufügen</button>
-                )}
+                        </thead>
+                        <tbody>
+                            {rows.map((row, index) => (
+                                <tr key={row.recipe_id}>
+                                    <td>{row.recipe_id}</td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            value={row.name}
+                                            onChange={(e) => handleInputChange(index, e)}
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {rows.length < maxRows && (
+                        <button className="UCRP_add_row_button" onClick={handleAddRow}>Zeile hinzufügen</button>
+                    )}
+                </div>
             </div>
         </div>
     );
