@@ -1,34 +1,43 @@
-/* Nav.css */
-
-.Footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #333; /* Hintergrundfarbe der Navigationsleiste */
-    padding: 10px 0; /* Innenabstand oben und unten */
-  }
-  
- .Footer ul {
-    list-style-type: none; /* Entfernt Aufzählungszeichen von der Liste */
-    margin: 0;
-    padding: 0;
-    display: flex; /* Damit die Tabs horizontal angeordnet werden */
-    justify-content: center; /* Zentriert die Tabs horizontal */
-  }
-  
- .Footer li a{
-    margin: 0 15px; /* Abstand zwischen den Tabs */
-    cursor: pointer; /* Zeigt den Zeiger als Zeigefinger an, um anzuzeigen, dass es klickbar ist */
-    color: #fff; /* Textfarbe der Tabs */
-    font-weight: bold; /* Fettschrift für die Tabs */
-    transition: color 0.3s; /* Animiert die Textfarbe beim Überfahren mit der Maus */
-  }
-
-.Footer li a:hover{
-  color: #ff5733;
+/* Globales CSS */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
-/* 
-  .Footer  li.active {
-    color: #ff5733;
-  }*/
+
+.body {
+  min-height: 100vh; /* Höhe des Bildschirms */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Footer fixiert am unteren Rand */
+.Footer {
+
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333; /* Hintergrundfarbe des Footers */
+  padding: 10px 0; /* Innenabstand oben und unten */
+  z-index: 1000; /* Stellt sicher, dass der Footer über anderen Inhalten liegt */
+}
+
+.Footer ul {
+  list-style-type: none; /* Entfernt Aufzählungszeichen von der Liste */
+  margin: 0;
+  padding: 0;
+  display: flex; /* Tabs werden horizontal angeordnet */
+  justify-content: center; /* Zentriert die Tabs horizontal */
+}
+
+.Footer li a {
+  margin: 0 15px; /* Abstand zwischen den Tabs */
+  cursor: pointer; /* Zeigt den Zeiger als Zeigefinger an */
+  color: #fff; /* Textfarbe der Tabs */
+  font-weight: bold; /* Fettschrift für die Tabs */
+  transition: color 0.3s; /* Animiert die Textfarbe beim Überfahren mit der Maus */
+}
+
+.Footer li a:hover {
+  color: #ff5733; /* Textfarbe beim Hover */
+}

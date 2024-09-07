@@ -66,15 +66,15 @@ function SearchRecipesMain() {
         <div className="body_SearchRecipesMain">
             <div className="Page_SearchRecipesMain">
                 <div className="search-container">
-                    <button onClick={handleApiButtonClick}>
-                        Rezepte suchen
-                    </button>
                     <input
                         type="text"
                         placeholder="Filter Rezept-ID"
                         value={variableValue}
                         onChange={(e) => setVariableValue(e.target.value)}
                     />
+                    <button className='search-button-srm' onClick={handleApiButtonClick}>
+                        Rezepte suchen
+                    </button>
                 </div>
                 {showData ? (
                     <div>
