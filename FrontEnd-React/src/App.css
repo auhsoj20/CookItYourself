@@ -79,3 +79,9 @@ html, body {
   flex: 1; /* Nimmt den restlichen verfügbaren Platz ein */
   padding: 20px; /* Ein Innenabstand für den Inhalt */
 }
+
+.main-rout-body {
+  margin-bottom: 3vh;
+  margin-top: 7vh;
+
+}
