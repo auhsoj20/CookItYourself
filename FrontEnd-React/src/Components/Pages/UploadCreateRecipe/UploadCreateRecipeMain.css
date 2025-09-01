@@ -1,72 +1,125 @@
-/* Hauptcontainer für den gesamten Inhalt */
-.body_UploadCreateRecipe {
+/* styles.css */
+
+@media (max-width: 768px) {
+  .body_UploadCreateRecipe {
     padding: 20px;
-    height: 100%;
+  }
 }
 
-/* Hauptcontainer für den gesamten Inhalt */
+.body_UploadCreateRecipe {
+    padding: 30px;
+  }
+
+/* Stil für den Button und das Eingabefeld */
+.InputContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    align-items: center;
+    margin: auto;
+}
+
+.ContainerDescription {
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+}
+
+.HeaderDescription {
+    width: 35vh;
+}
+
+.HeaderName {
+    width: 10vh;
+}
+
+.HeaderPicture {
+    width: 20vh;
+}
+
+.RemoveRow {
+    width: 10vh;
+}
+
+.TitleUploadCreateRecipe {
+    /* Text zentrieren */
+    text-align: center;
+}
+
+.InputContainer input {
+    display: flex;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 300px;
+    text-align: center;
+    align-items: center;
+}
+
 .page_UploadCreateRecipe {
-    padding: 20px;
     background-color: #f9f9f9;
+    padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.37);
-    max-width: 600px;
+    max-width: 100vh; /* Etwas breiter für Rezeptdarstellungen */
     margin: auto;
-    height: 100%;
+  }
+
+.page_UploadCreateRecipe h2 {
+    margin-bottom: 20px;
+    color: #333;
 }
 
-/* Tabelle */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-bottom: 40px;
 }
 
-/* Tabellenkopf */
-thead th {
-    background-color: #007BFF;
-    color: white;
+th, td {
     padding: 10px;
-    text-align: center;
-    font-weight: bold;
-}
-
-/* Tabellenzeilen */
-tbody tr {
     border-bottom: 1px solid #ddd;
 }
 
-tbody td {
+th {
+    background-color: #f7f7f7;
+}
+
+input[type="text"],
+textarea,
+input[type="file"] {
+    width: calc(100% - 22px);
     padding: 10px;
-    text-align: center;
-}
-
-/* Eingabefeld */
-input[type="text"] {
-    width: 90%;
-    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    border: 1px solid #ccc;
 }
 
-/* Button */
-.UCRP_add_row_button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #28a745;
+textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+button {
+    background-color: #007bff;
     color: white;
+    padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    text-align: center;
 }
 
-.UCRP_add_row_button:hover {
-    background-color: #218838;
+button:hover {
+    background-color: #0056b3;
 }
 
-.UCRP_add_row_button:focus {
-    outline: none;
+.UCRP_add_row_button {
+    margin-top: 10px;
 }
 
+img {
+    display: block;
+    margin-top: 10px;
+}

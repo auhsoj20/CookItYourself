@@ -13,25 +13,25 @@ return (
 				setFooterTab(1); // Hier setzen Sie den Wert von footerTab
 			}}
 			>
-			<Link to="/Imprint">	
-			Impressum
-			</Link>
+				<Link to="/Imprint">
+				Impressum
+				</Link>
 			</li>
 			<li
 			className={footerTab === 2 ? 'active' : ''}
 			onClick={() => setFooterTab(2)}
 				>
-			<Link to="/Contact">			
-				Kontakt
-			</Link>	
+				<Link to="/Contact">
+					Kontakt
+				</Link>
 			</li>
 			<li
 			className={footerTab === 3 ? 'active' : ''}
 			onClick={() => setFooterTab(3)}
 				>
-			<Link to="/Privacy_policy">					
-				Datenschutzerklärung
-			</Link>	
+				<Link to="/Privacy_policy">
+					Datenschutzerklärung
+				</Link>
 			</li>
 		</ul>
 	</nav>

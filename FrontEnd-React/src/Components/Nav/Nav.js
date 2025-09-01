@@ -17,7 +17,7 @@ function Nav({ activeTab, setActiveTab }) {
       <ul>
         <li>
           <Link to="/">  
-            <button onClick={() => setActiveTab(0)} className="logo-button">
+            <button onClick={() => setActiveTab(0)} className="logo-button hoverable">
                 
               <img src={logo} className="App-logo" alt="logo" />
 

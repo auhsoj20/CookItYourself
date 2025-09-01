@@ -44,7 +44,8 @@ function MainPage() {
   }, [buttonClicked]);
 
   return (
-    <div className="body">
+    <div className="Body_Main">
+      <div className="Page_Main">
         <header className="App-header">
         <div>
           Jetzt das Projekt auf &nbsp;
@@ -73,6 +74,7 @@ function MainPage() {
       ) : (
         <p className="ApiDesign">Waiting for API Action!</p>
       )}
+      </div>
     </div>
   );
 }

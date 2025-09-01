@@ -70,6 +70,14 @@
   cursor: pointer;
 };
 
+.Nav .logo-button {
+  transition: color 0.3s;
+}
+
+.Nav .logo-button:hover {
+  color: #ff5733; /* Textfarbe für den aktiven Tab beim Hovern */
+}
+
 
 /* Hier wird der Switch-Button spezifisch gestaltet */
 .theme-switch {
@@ -135,4 +143,12 @@ body.light-theme {
   color: #333;
   text-align: center;
   min-height: 90vh;
+}
+
+.hoverable {
+  transition: color 0.3s;
+}
+
+.hoverable:hover {
+  background-color: #ff5733; /* Hintergrundfarbe beim Hover */
 }
