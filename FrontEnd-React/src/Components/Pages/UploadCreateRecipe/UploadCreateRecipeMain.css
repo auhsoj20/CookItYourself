@@ -1,16 +1,16 @@
-/* styles.css */
-
-@media (max-width: 768px) {
-  .body_UploadCreateRecipe {
-    padding: 20px;
-  }
-}
+/* UploadCreateRecipeMain.css - Mobile Optimiert */
 
 .body_UploadCreateRecipe {
     padding: 30px;
-  }
+}
 
-/* Stil für den Button und das Eingabefeld */
+@media (max-width: 768px) {
+    .body_UploadCreateRecipe {
+        padding: 15px;
+    }
+}
+
+/* Container für Input-Felder */
 .InputContainer {
     display: flex;
     justify-content: center;
@@ -25,6 +25,7 @@
     height: 10vh;
 }
 
+/* Header-Spalten Breiten für Desktop */
 .HeaderDescription {
     width: 35vh;
 }
@@ -42,8 +43,8 @@
 }
 
 .TitleUploadCreateRecipe {
-    /* Text zentrieren */
     text-align: center;
+    margin-bottom: 30px;
 }
 
 .InputContainer input {
@@ -62,30 +63,115 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.37);
-    max-width: 100vh; /* Etwas breiter für Rezeptdarstellungen */
+    max-width: 100vh;
     margin: auto;
-  }
+}
 
 .page_UploadCreateRecipe h2 {
     margin-bottom: 20px;
     color: #333;
 }
 
-table {
+/* Desktop Tabelle */
+.recipe-table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 40px;
 }
 
-th, td {
+.recipe-table th, 
+.recipe-table td {
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
 
-th {
+.recipe-table th {
     background-color: #f7f7f7;
 }
 
+/* Mobile Karten-Layout */
+.recipe-cards {
+    display: none;
+}
+
+.recipe-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.recipe-card-step {
+    font-weight: bold;
+    font-size: 18px;
+    color: #007bff;
+}
+
+.recipe-card-remove {
+    padding: 5px 10px;
+    font-size: 12px;
+    background-color: #dc3545;
+    border-radius: 4px;
+}
+
+.recipe-card-field {
+    margin-bottom: 15px;
+}
+
+.recipe-card-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.recipe-card-field input[type="text"],
+.recipe-card-field textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.recipe-card-field textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.recipe-card-field input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+}
+
+.recipe-card-image {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.recipe-card-image img {
+    max-width: 100px;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Allgemeine Input-Styles */
 input[type="text"],
 textarea,
 input[type="file"] {
@@ -101,6 +187,7 @@ textarea {
     min-height: 60px;
 }
 
+/* Button-Styles */
 button {
     background-color: #007bff;
     color: white;
@@ -109,6 +196,7 @@ button {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -117,9 +205,86 @@ button:hover {
 
 .UCRP_add_row_button {
     margin-top: 10px;
+    margin-right: 10px;
+}
+
+.UCRP_remove_row_button {
+    background-color: #dc3545;
+    padding: 8px 12px;
+    font-size: 12px;
+}
+
+.UCRP_remove_row_button:hover {
+    background-color: #c82333;
+}
+
+.submit-button {
+    background-color: #28a745;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.submit-button:hover {
+    background-color: #218838;
+}
+
+.action-buttons {
+    text-align: center;
+    margin-top: 20px;
 }
 
 img {
     display: block;
     margin-top: 10px;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .page_UploadCreateRecipe {
+        max-width: 100%;
+        padding: 15px;
+        margin: 0;
+    }
+
+    .TitleUploadCreateRecipe {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    /* Tabelle auf Mobile verstecken */
+    .recipe-table {
+        display: none;
+    }
+
+    /* Karten-Layout auf Mobile anzeigen */
+    .recipe-cards {
+        display: block;
+    }
+
+    .InputContainer {
+        margin-bottom: 10px;
+    }
+
+    .InputContainer input {
+        width: 100%;
+        max-width: none;
+    }
+
+    .action-buttons {
+        position: sticky;
+        bottom: 0;
+        background-color: #f9f9f9;
+        padding: 15px 0;
+        border-top: 1px solid #ddd;
+        margin: 20px -15px -15px -15px;
+    }
+
+    .UCRP_add_row_button,
+    .submit-button {
+        display: block;
+        width: 90%;
+        margin: 10px auto;
+        padding: 12px;
+    }
 }

@@ -11,6 +11,7 @@ import PrivacyPolicy from './Components/Pages/PrivacyPolicy/PrivacyPolicyMain.js
 import SearchRecipes from './Components/Pages/SearchRecipes/SearchRecipesMain.js';
 import UploadCreateRecipe from './Components/Pages/UploadCreateRecipe/UploadCreateRecipeMain.js';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import './i18n'; 
 
 function AppRouter() {
   const [activeTab, setActiveTab] = useState(0);

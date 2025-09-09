@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import AppRouter from './AppRouter';
+import i18next from 'i18next';
 
 //const root = ReactDOM.createRoot(document.getElementById('root'));
 //root.render(

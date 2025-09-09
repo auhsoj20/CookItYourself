@@ -1,0 +1,14 @@
+{
+  "en": {
+    "apiLink": "Now follow the project on GitHub",
+    "buttonText": "Get API Data",
+    "placeholder": "Enter Variable Value",
+    "waitingMessage": "Waiting for API Action!"
+  },
+  "de": {
+    "apiLink": "Jetzt das Projekt auf Github verfolgen!",
+    "buttonText": "API-Daten abrufen",
+    "placeholder": "Geben Sie die Variable ein",
+    "waitingMessage": "Warte auf eine API-Aktion!"
+  }
+}

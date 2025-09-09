@@ -1,0 +1,150 @@
+{
+  "navigation": {
+    "searchRecipes": "Search Recipes",
+    "uploadCreateRecipe": "Upload/Create Recipe",
+    "account": "Account"
+  },
+
+
+  "mainPage": {
+    "followProject": "Follow the project on",
+    "githubLink": "Github", 
+    "followProjectEnd": "now!",
+    "buttonText": "Load API Data",
+    "inputPlaceholder": "Enter the variable",
+    "waitingMessage": "Waiting for API Action!"
+  },
+
+
+  "uploadCreateRecipe": {
+      "title": "Upload Recipes",
+      "table": {
+        "step": "Step",
+        "name": "Name",
+        "description": "Description",
+        "image": "Image"
+      },
+      "labels": {
+        "recipeName": "Recipe Name",
+        "description": "Description",
+        "uploadImage": "Upload Image"
+      },
+      "placeholders": {
+        "recipeName": "Enter recipe name...",
+        "description": "Enter description..."
+      },
+      "buttons": {
+        "delete": "Delete",
+        "addRow": "Add Row",
+        "addNewRecipeMobile": "Add New Recipe",
+        "uploadRecipes": "Upload Recipes"
+      },
+      "mobile": {
+        "step": "Step {{step}}"
+      },
+      "alt": {
+        "recipe": "Recipe {{index}}"
+      },
+      "validation": {
+        "emptyFields": "Please fill in all fields!"
+      },
+      "success": {
+        "uploaded": "Recipes uploaded successfully!"
+      }
+    },
+
+
+    "searchRecipes": {
+      "placeholder": {
+        "recipeId": "Filter Recipe ID"
+      },
+      "buttons": {
+        "searchRecipes": "Search Recipes",
+        "selectImage": "Select Image",
+        "analyzeImage": "Analyze Image",
+        "searchByIngredients": "Search by Ingredients"
+      },
+      "sections": {
+        "characteristics": "Characteristics",
+        "ingredients": "Ingredients",
+        "steps": "Cooking Steps",
+        "imageAnalysis": "Image Analysis",
+        "recognizedIngredients": "Recognized Ingredients"
+      },
+      "table": {
+        "headers": {
+          "recipeId": "Recipe ID",
+          "title": "Title",
+          "userId": "User ID",
+          "modificationDate": "Modification Date",
+          "creationDate": "Creation Date",
+          "image": "Image",
+          "description": "Description",
+          "ingredient": "Ingredient",
+          "amount": "Amount",
+          "unit": "Unit",
+          "stepId": "Step ID"
+        }
+      },
+      "messages": {
+        "noData": "No data available."
+      }
+    },
+
+
+    "account": {
+      "title": "Account Management",
+      "tabs": {
+        "masterData": "Master Data",
+        "address": "Address",
+        "favorites": "Favorites"
+      },
+      "labels": {
+        "username": "Username:",
+        "email": "Email:",
+        "firstName": "First Name:",
+        "lastName": "Last Name:",
+        "birthDate": "Birth Date:",
+        "phoneNumber": "Phone Number:",
+        "gender": "Gender:",
+        "street": "Street:",
+        "city": "City:",
+        "postalCode": "Postal Code:",
+        "country": "Country:",
+        "favoritesId": "Favorites ID:"
+      },
+      "gender": {
+        "male": "Male",
+        "female": "Female",
+        "diverse": "Diverse"
+      },
+      "buttons": {
+        "edit": "Edit",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "messages": {
+        "favoritesComingSoon": "Favorites functionality coming soon!"
+      }
+    },
+    
+    
+  "footer": {
+    "imprint": "Imprint",
+    "contact": "Contact",
+    "privacyPolicy": "Privacy Policy"
+  },
+
+
+  "contact": {
+    "title": "Contact",
+    "name": "Name",
+    "email": "Email Address",
+    "message": "Message",
+    "submit": "Submit",
+    "messageSent": "Message has been sent:",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "your.email@example.com",
+    "messagePlaceholder": "Enter your message here..."
+  }
+}  

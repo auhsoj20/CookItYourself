@@ -19,6 +19,8 @@
     justify-content: center;
     margin-bottom: 20px;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .search-container button {
@@ -48,6 +50,74 @@
     font-size: 16px;
     width: 300px;
     text-align: center;
+}
+
+/* Neuer Stil für die Bild-Upload Sektion */
+.image-upload-section {
+    margin: 30px 0;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.image-preview {
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* Stil für die erkannten Zutaten */
+.recognized-ingredients {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f0f8ff;
+    border-radius: 8px;
+    border: 1px solid #007BFF;
+}
+
+.recognized-ingredients h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #007BFF;
+    text-align: center;
+}
+
+.ingredients-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.ingredient-tag {
+    background-color: #28a745;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.remove-ingredient {
+    margin-left: 5px !important;
+    background: #dc3545 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 20px !important;
+    height: 20px !important;
+    cursor: pointer !important;
+    font-size: 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.remove-ingredient:hover {
+    background: #c82333 !important;
 }
 
 /* Allgemeine Stil für Tabellen */
@@ -87,12 +157,19 @@
 /* Stil für die Ladeanzeige */
 .loading-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: auto; /* Höhe passt sich an den Inhalt an */
     min-height: 50px; /* Mindesthöhe, um Platz für die Ladeanzeige zu gewährleisten */
     padding: 20px 0; /* Abstand oben und unten, um den Container zentriert zu halten */
     background-color: #f9f9f9;
+}
+
+.loading-container p {
+    margin-top: 10px;
+    color: #666;
+    font-size: 16px;
 }
 
 /* Stil für den allgemeinen Button */
@@ -121,4 +198,29 @@
     font-size: 18px;     /* Schriftgröße anpassen */
     color: #666;         /* Farbe des Textes */
     margin: 20px 0;      /* Abstand oben und unten */
+}
+
+/* Responsive Design für kleinere Bildschirme */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column;
+    }
+    
+    .search-container input {
+        width: 100%;
+        max-width: 300px;
+        margin-bottom: 10px;
+    }
+    
+    .search-container button {
+        margin: 5px 0;
+    }
+    
+    .ingredients-list {
+        justify-content: flex-start;
+    }
+    
+    .image-upload-section {
+        padding: 15px;
+    }
 }
