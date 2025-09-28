@@ -1,36 +1,61 @@
 from typing import Union
-import json
 import base64
 import io
-import re
-import os
-from pathlib import Path
-
-from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from PIL import Image
 import numpy as np
+from PIL import Image
+import cv2
+import torch
+import torchvision.transforms as transforms
+from torchvision import models
+import tensorflow as tf
+from transformers import pipeline, BlipProcessor, BlipForConditionalGeneration
+from pydantic import BaseModel, EmailStr
+from datetime import datetime
+
+# Detectron2 imports mit verbessertem Fallback
+DETECTRON2_AVAILABLE = False
+detectron2_model = None
+detectron2_cfg = None
+
+try:
+    from detectron2 import model_zoo
+    from detectron2.engine import DefaultPredictor
+    from detectron2.config import get_cfg
+    from detectron2.utils.visualizer import Visualizer
+    from detectron2.data import MetadataCatalog
+    from detectron2.utils.logger import setup_logger
+    setup_logger()
+    DETECTRON2_AVAILABLE = True
+    print("Detectron2 erfolgreich importiert")
+except ImportError as e:
+    print(f"Detectron2 nicht verfügbar: {e}")
+    print("Detectron2 wird übersprungen. Installation mit: pip install detectron2")
+except Exception as e:
+    print(f"Fehler beim Import von Detectron2: {e}")
+
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 import mysql.connector
 
-# YOLOv8 Integration für lokale Bilderkennung
-try:
-    from ultralytics import YOLO
-    YOLO_AVAILABLE = True
-    print("✅ YOLOv8 erfolgreich geladen!")
-except ImportError:
-    YOLO_AVAILABLE = False
-    print("❌ YOLOv8 nicht installiert. Bitte installieren Sie: pip install ultralytics")
+# Pydantic Modell für das Kontaktformular
+class ContactForm(BaseModel):
+    name: str
+    email: EmailStr
+    subject: str
+    message: str
 
-# Datenbankverbindung
+# Pydantic Modell für Status-Update
+class StatusUpdate(BaseModel):
+    status: str
+
 db = mysql.connector.connect(
     host="192.168.10.60", 
     port="3306",
     user="BE-Serviceuser",
     charset="utf8mb4",
     database="cookityourself", 
-    password="!123456789A"
-)
+    password="!123456789A")
     
 app = FastAPI()
 
@@ -43,53 +68,321 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# YOLOv8 Modell global laden (für bessere Performance)
+
+# Globale Variablen für die lokalen KI-Modelle
 yolo_model = None
-if YOLO_AVAILABLE:
+pytorch_model = None
+blip_processor = None
+blip_model = None
+
+def initialize_models():
+    """
+    Initialisiere alle lokalen KI-Modelle beim Serverstart
+    """
+    global yolo_model, pytorch_model, blip_processor, blip_model, detectron2_model, detectron2_cfg
+    
     try:
-        # Versuche vortrainiertes YOLOv8 Modell zu laden
-        yolo_model = YOLO('yolov8n.pt')  # Nano-Version für schnelle Inferenz
-        print("✅ YOLOv8 Modell erfolgreich geladen!")
+        # YOLO für Objekterkennung (YOLOv5)
+        print("Lade YOLO Modell...")
+        yolo_model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+        print("YOLO Modell geladen")
     except Exception as e:
-        print(f"❌ Fehler beim Laden des YOLOv8 Modells: {e}")
-        yolo_model = None
+        print(f"YOLO Modell konnte nicht geladen werden: {e}")
+        
+    try:
+        # PyTorch ResNet für Bildklassifikation
+        print("Lade PyTorch ResNet Modell...")
+        pytorch_model = models.resnet50(pretrained=True)
+        pytorch_model.eval()
+        print("PyTorch Modell geladen")
+    except Exception as e:
+        print(f"PyTorch Modell konnte nicht geladen werden: {e}")
+        
+    try:
+        # BLIP für Bildbeschreibung und Objekterkennung
+        print("Lade BLIP Modell...")
+        blip_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+        blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+        print("BLIP Modell geladen")
+    except Exception as e:
+        print(f"BLIP Modell konnte nicht geladen werden: {e}")
+        
+    # Detectron2 für erweiterte Objekterkennung
+    if DETECTRON2_AVAILABLE:
+        try:
+            print("Lade Detectron2 Modell...")
+            detectron2_cfg = get_cfg()
+            detectron2_cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
+            detectron2_cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
+            detectron2_cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")
+            detectron2_cfg.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+            detectron2_model = DefaultPredictor(detectron2_cfg)
+            print("Detectron2 Modell erfolgreich geladen")
+        except Exception as e:
+            print(f"Fehler beim Laden von Detectron2: {e}")
+            print("Detectron2 bleibt als nicht verfügbar markiert")
+    else:
+        print("Detectron2 übersprungen - nicht verfügbar")
 
-# Mapping von YOLO COCO-Klassen zu deutschen Lebensmittelnamen
-FOOD_CLASS_MAPPING = {
-    # COCO Dataset Klassen, die Lebensmittel sind
-    47: "Äpfel",           # apple
-    48: "Sandwiches",      # sandwich  
-    49: "Orangen",         # orange
-    50: "Brokkoli",        # broccoli
-    51: "Karotten",        # carrot
-    52: "Hot Dogs",        # hot dog
-    53: "Pizza",           # pizza
-    54: "Donuts",          # donut
-    55: "Kuchen",          # cake
-    # Erweiterte Mappings für häufige Objekte, die auf Lebensmittel hindeuten
-    0: "Menschen",         # person (könnte auf Küchenszenario hindeuten)
-    39: "Flaschen",        # bottle
-    40: "Weingläser",      # wine glass  
-    41: "Tassen",          # cup
-    42: "Gabeln",          # fork
-    43: "Messer",          # knife
-    44: "Löffel",          # spoon
-    45: "Schalen",         # bowl
-    46: "Bananen",         # banana
-}
+def analyze_ingredients_yolo(image_data):
+    """
+    KI Option 1: YOLO für lokale Objekterkennung
+    """
+    try:
+        if yolo_model is None:
+            return ["YOLO Modell nicht verfügbar"]
+            
+        # Konvertiere Bytes zu PIL Image
+        image = Image.open(io.BytesIO(image_data))
+        
+        # YOLO Inferenz
+        results = yolo_model(image)
+        
+        # Extrahiere erkannte Objekte
+        detections = results.pandas().xyxy[0]
+        
+        # Filtere nach Lebensmittel-relevanten Klassen
+        food_classes = [
+            # Früchte
+            'apple', 'banana', 'orange', 'lemon', 'lime', 'grapefruit',
+            'strawberry', 'blueberry', 'raspberry', 'blackberry', 'grape',
+            'pineapple', 'mango', 'papaya', 'kiwi', 'peach', 'pear',
+            'plum', 'cherry', 'watermelon', 'cantaloupe', 'avocado',
+            'coconut', 'pomegranate', 'fig', 'date',
+            
+            # Gemüse
+            'broccoli', 'carrot', 'celery', 'lettuce', 'spinach', 'kale',
+            'cabbage', 'cauliflower', 'brussels sprouts', 'asparagus',
+            'onion', 'garlic', 'ginger', 'potato', 'sweet potato',
+            'tomato', 'cucumber', 'bell pepper', 'chili pepper',
+            'corn', 'peas', 'green beans', 'zucchini', 'eggplant',
+            'mushroom', 'radish', 'beet', 'turnip', 'parsnip',
+            
+            # Getreide und Körner
+            'bread', 'rice', 'pasta', 'noodles', 'cereal', 'oats',
+            'wheat', 'barley', 'quinoa', 'couscous',
+            
+            # Proteine
+            'chicken', 'beef', 'pork', 'lamb', 'fish', 'salmon',
+            'tuna', 'shrimp', 'lobster', 'crab', 'egg', 'tofu',
+            'beans', 'lentils', 'chickpeas', 'nuts', 'almonds',
+            'peanuts', 'cashews', 'walnuts',
+            
+            # Milchprodukte
+            'milk', 'cheese', 'yogurt', 'butter', 'cream',
+            'ice cream', 'sour cream',
+            
+            # Fertiggerichte und Snacks
+            'sandwich', 'hot dog', 'pizza', 'burger', 'taco',
+            'burrito', 'sushi', 'soup', 'salad', 'french fries',
+            'chips', 'popcorn', 'crackers', 'pretzel',
+            
+            # Süßwaren und Desserts
+            'donut', 'cake', 'cookie', 'muffin', 'cupcake',
+            'pie', 'chocolate', 'candy', 'gummy bears', 'lollipop',
+            'brownie', 'pudding', 'jelly', 'jam',
+            
+            # Getränke
+            'bottle', 'wine glass', 'cup', 'coffee', 'tea',
+            'juice', 'soda', 'water', 'beer', 'wine',
+            'cocktail', 'smoothie', 'milkshake',
+            
+            # Küchenutensilien und Geschirr
+            'fork', 'knife', 'spoon', 'bowl', 'plate', 'glass',
+            'mug', 'chopsticks', 'cutting board', 'pan', 'pot',
+            'spatula', 'whisk', 'ladle', 'tongs', 'grater',
+            'blender', 'mixer', 'oven', 'microwave', 'toaster',
+            
+            # Gewürze und Condiments
+            'salt', 'pepper', 'herbs', 'spices', 'vinegar',
+            'oil', 'sauce', 'ketchup', 'mustard', 'mayonnaise',
+            'honey', 'syrup', 'sugar',
+            
+            # Weitere lebensmittelbezogene Objekte
+            'grocery bag', 'shopping cart', 'food container',
+            'lunch box', 'thermos', 'water bottle', 'can opener',
+            'bottle opener', 'corkscrew', 'kitchen scale',
+            'measuring cup', 'measuring spoon'
+        ]
+        
+        ingredients = []
+        for _, detection in detections.iterrows():
+            class_name = detection['name']
+            confidence = detection['confidence']
+            
+            if class_name in food_classes and confidence > 0.5:
+                # Übersetze englische Namen zu deutschen
+                german_translations = {
+                    'apple': 'Apfel', 'banana': 'Banane', 'sandwich': 'Sandwich',
+                    'orange': 'Orange', 'broccoli': 'Brokkoli', 'carrot': 'Karotte',
+                    'hot dog': 'Hot Dog', 'pizza': 'Pizza', 'donut': 'Donut',
+                    'cake': 'Kuchen', 'bottle': 'Flasche', 'wine glass': 'Weinglas',
+                    'cup': 'Tasse', 'bowl': 'Schüssel'
+                }
+                german_name = german_translations.get(class_name, class_name)
+                ingredients.append(german_name)
+        
+        return ingredients if ingredients else ["Keine Lebensmittel erkannt"]
+        
+    except Exception as e:
+        print(f"YOLO Fehler: {e}")
+        return ["YOLO Verarbeitung fehlgeschlagen"]
 
-# Zusätzliche deutsche Lebensmittel für erweiterte Erkennung
-COMMON_GERMAN_INGREDIENTS = [
-    "Tomaten", "Zwiebeln", "Paprika", "Kartoffeln", "Gurken", 
-    "Salat", "Spinat", "Pilze", "Knoblauch", "Zitronen",
-    "Hähnchen", "Rindfleisch", "Schweinefleisch", "Fisch", "Eier", 
-    "Milch", "Käse", "Butter", "Brot", "Nudeln", "Reis",
-    "Basilikum", "Petersilie", "Thymian", "Rosmarin", "Oregano",
-    "Olivenöl", "Essig", "Salz", "Pfeffer", "Zucker", "Mehl",
-    "Erdbeeren", "Bananen", "Avocado", "Kiwi", "Mango"
-]
+def analyze_ingredients_blip(image_data):
+    """
+    KI Option 2: BLIP für lokale Bildbeschreibung und Zutatenerkennung
+    """
+    try:
+        if blip_model is None or blip_processor is None:
+            return ["BLIP Modell nicht verfügbar"]
+            
+        # Konvertiere Bytes zu PIL Image
+        image = Image.open(io.BytesIO(image_data)).convert('RGB')
+        
+        # BLIP Prompt für Zutatenerkennung
+        text = "Erkenne alle Zutaten und Lebensmittel in diesem Bild und gib nur eine kommagetrennte Liste der erkannten Elemente zurück – ohne Einleitung, Zusatztext oder Nummerierung. Verwende deutsche Bezeichnungen und entferne Duplikate."
+        
+        # Verarbeite das Bild
+        inputs = blip_processor(image, text, return_tensors="pt")
+        
+        # Generiere Beschreibung
+        out = blip_model.generate(**inputs, max_length=100, num_beams=5)
+        description = blip_processor.decode(out[0], skip_special_tokens=True)
+        
+        # Zusätzlich: Einfache Bildbeschreibung ohne Text-Prompt
+        inputs_simple = blip_processor(image, return_tensors="pt")
+        out_simple = blip_model.generate(**inputs_simple, max_length=50, num_beams=5)
+        simple_description = blip_processor.decode(out_simple[0], skip_special_tokens=True)
+        
+        # Extrahiere Zutaten aus der Beschreibung
+        ingredients = extract_ingredients_from_text(description + " " + simple_description)
+        
+        return ingredients if ingredients else [f"Bildbeschreibung: {simple_description}"]
+        
+    except Exception as e:
+        print(f"BLIP Fehler: {e}")
+        return ["BLIP Verarbeitung fehlgeschlagen"]
 
-# ============= BESTEHENDE ENDPOINTS =============
+def analyze_ingredients_opencv(image_data):
+    """
+    KI Option 3: OpenCV + einfache Bildverarbeitung für Farb- und Formerkennung
+    """
+    try:
+        # Konvertiere Bytes zu OpenCV Image
+        nparr = np.frombuffer(image_data, np.uint8)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+        # Konvertiere zu HSV für bessere Farberkennung
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        
+        ingredients = []
+        
+        # Definiere Farbbereiche für verschiedene Zutaten
+        color_ranges = {
+            'Tomaten': ([0, 50, 50], [10, 255, 255]),      # Rot
+            'Karotten': ([10, 50, 50], [25, 255, 255]),    # Orange
+            'Salat': ([40, 40, 40], [80, 255, 255]),       # Grün
+            'Zwiebeln': ([20, 30, 30], [40, 255, 255]),    # Gelb/Braun
+            'Auberginen': ([120, 50, 50], [140, 255, 255]) # Lila
+        }
+        
+        for ingredient, (lower, upper) in color_ranges.items():
+            lower_bound = np.array(lower)
+            upper_bound = np.array(upper)
+            
+            # Erstelle Maske für Farbbereich
+            mask = cv2.inRange(hsv, lower_bound, upper_bound)
+            
+            # Zähle Pixel im Farbbereich
+            pixel_count = cv2.countNonZero(mask)
+            
+            # Wenn genügend Pixel gefunden, füge Zutat hinzu
+            if pixel_count > 1000:  # Schwellenwert anpassbar
+                ingredients.append(f"{ingredient}")
+        
+        return ingredients if ingredients else ["Keine charakteristischen Farben erkannt"]
+        
+    except Exception as e:
+        print(f"OpenCV Fehler: {e}")
+        return ["OpenCV Verarbeitung fehlgeschlagen"]
+
+def analyze_ingredients_detectron2(image_data):
+    """
+    KI Option 4: Detectron2 für erweiterte Objekterkennung und Instanzsegmentierung
+    """
+    try:
+        # Prüfe ob Detectron2 verfügbar ist
+        if not DETECTRON2_AVAILABLE:
+            return ["Detectron2 nicht installiert. Installation: pip install detectron2"]
+            
+        if detectron2_model is None:
+            return ["Detectron2 Modell nicht geladen"]
+        
+        # Konvertiere Bytes zu numpy array
+        nparr = np.frombuffer(image_data, np.uint8)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+        # Detectron2 Inferenz
+        outputs = detectron2_model(image)
+        
+        # Extrahiere Vorhersagen
+        instances = outputs["instances"]
+        
+        # COCO Klassen für Lebensmittel
+        coco_food_classes = {
+            47: 'Tasse', 48: 'Gabel', 49: 'Messer', 50: 'Löffel',
+            51: 'Schüssel', 52: 'Banane', 53: 'Apfel', 54: 'Sandwich',
+            55: 'Orange', 56: 'Brokkoli', 57: 'Karotte', 58: 'Hot Dog',
+            59: 'Pizza', 60: 'Donut', 61: 'Kuchen', 44: 'Flasche',
+            46: 'Weinglas'
+        }
+        
+        ingredients = []
+        confidence_threshold = 0.6
+        
+        for i in range(len(instances)):
+            class_id = instances.pred_classes[i].item()
+            confidence = instances.scores[i].item()
+            
+            if confidence > confidence_threshold:
+                # Prüfe ob es sich um ein Lebensmittel handelt
+                if class_id in coco_food_classes:
+                    ingredients.append(f"{coco_food_classes[class_id]} ({confidence:.2f})")
+        
+        return ingredients if ingredients else ["Keine Lebensmittel oder Küchenutensilien erkannt"]
+        
+    except Exception as e:
+        print(f"Detectron2 Fehler: {e}")
+        return [f"Detectron2 Verarbeitung fehlgeschlagen: {str(e)}"]
+
+def extract_ingredients_from_text(text):
+    """
+    Hilfsfunktion: Extrahiere Zutaten aus Textbeschreibung
+    """
+    # Einfache Keyword-basierte Extraktion
+    ingredient_keywords = [
+        'tomato', 'tomate', 'zwiebel', 'onion', 'karotte', 'carrot',
+        'paprika', 'pepper', 'salat', 'lettuce', 'gurke', 'cucumber',
+        'brot', 'bread', 'käse', 'cheese', 'fleisch', 'meat',
+        'huhn', 'chicken', 'fisch', 'fish', 'ei', 'egg',
+        'milch', 'milk', 'butter', 'öl', 'oil', 'salz', 'salt',
+        'zucker', 'sugar', 'pasta', 'nudeln', 'reis', 'rice'
+    ]
+    
+    text_lower = text.lower()
+    found_ingredients = []
+    
+    for keyword in ingredient_keywords:
+        if keyword in text_lower:
+            # Kapitalisiere ersten Buchstaben
+            found_ingredients.append(keyword.capitalize())
+    
+    return list(set(found_ingredients))  # Entferne Duplikate
+
+# Initialisiere Modelle beim Serverstart
+@app.on_event("startup")
+async def startup_event():
+    initialize_models()
 
 @app.get("/")
 def read_root():
@@ -115,6 +408,61 @@ def read_item(item_id: int, q: Union[str, None] = None):
     cursor.close()
     item_id = item_id / 10
     return {"item_id": item_id, "q": q}
+
+@app.post("/analyze_ingredients")
+async def analyze_ingredients(
+    file: UploadFile = File(...),
+    ai_type: str = Form(...)
+):
+    """
+    Endpoint für Zutatenerkennung mit verschiedenen lokalen KI-Modellen
+    """
+    try:
+        # Lese das hochgeladene Bild
+        image_data = await file.read()
+        
+        # Wähle KI-Modell basierend auf Parameter
+        if ai_type == "yolo":
+            ingredients = analyze_ingredients_yolo(image_data)
+        elif ai_type == "blip":
+            ingredients = analyze_ingredients_blip(image_data)
+        elif ai_type == "opencv":
+            ingredients = analyze_ingredients_opencv(image_data)
+        elif ai_type == "detectron2":
+            ingredients = analyze_ingredients_detectron2(image_data)
+        else:
+            raise HTTPException(status_code=400, detail="Unbekannter AI-Typ")
+        
+        return {
+            "ai_type": ai_type,
+            "ingredients": ingredients,
+            "status": "success"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Fehler bei der Bildanalyse: {str(e)}")
+
+@app.get("/available_ai_models")
+def get_available_ai_models():
+    """
+    Gibt verfügbare KI-Modelle zurück
+    """
+    models_status = {
+        "yolo": yolo_model is not None,
+        "blip": blip_model is not None and blip_processor is not None,
+        "opencv": True,  # OpenCV ist normalerweise immer verfügbar
+        "detectron2": DETECTRON2_AVAILABLE and detectron2_model is not None
+    }
+    
+    return {
+        "models": models_status,
+        "descriptions": {
+            "yolo": "YOLO v5 - Objekterkennung für Lebensmittel",
+            "blip": "BLIP - Bildbeschreibung und Zutatenerkennung",
+            "opencv": "OpenCV - Farb- und Formerkennung",
+            "detectron2": "Detectron2 - Erweiterte Objekterkennung und Instanzsegmentierung"
+        }
+    }
 
 @app.get("/recipe_header/{recipe_id}")
 def read_item(recipe_id: int):
@@ -164,373 +512,131 @@ def read_root():
     cursor.close()
     return result
 
-# ============= NEUE ENDPOINTS FÜR BILD-ANALYSE =============
-
-@app.post("/analyze-image")
-async def analyze_image_yolo(image: UploadFile = File(...)):
+def save_contact_to_db(contact_data: ContactForm):
     """
-    Analysiert ein hochgeladenes Bild mit YOLOv8 und erkennt Lebensmittel/Objekte
+    Speichert die Kontaktanfrage in der Datenbank
     """
     try:
-        # Bild validieren
-        if not image.content_type.startswith('image/'):
-            raise HTTPException(status_code=400, detail="File must be an image")
-        
-        # YOLOv8 Verfügbarkeit prüfen
-        if not YOLO_AVAILABLE or yolo_model is None:
-            raise HTTPException(
-                status_code=500, 
-                detail="YOLOv8 ist nicht verfügbar. Bitte installieren Sie: pip install ultralytics"
-            )
-        
-        # Bild lesen und validieren
-        image_bytes = await image.read()
-        
-        # Bild mit PIL öffnen und validieren
-        try:
-            pil_image = Image.open(io.BytesIO(image_bytes))
-            width, height = pil_image.size
-            
-            # Minimale Bildgröße prüfen
-            if width < 50 or height < 50:
-                raise HTTPException(status_code=400, detail="Image too small")
-                
-            # Bild in RGB konvertieren falls nötig
-            if pil_image.mode != 'RGB':
-                pil_image = pil_image.convert('RGB')
-                
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Invalid image file: {str(e)}")
-        
-        print(f"🔍 Analysiere Bild '{image.filename}' ({width}x{height}) mit YOLOv8...")
-        
-        # YOLOv8 Inferenz durchführen
-        try:
-            # Bild als numpy array für YOLOv8
-            image_array = np.array(pil_image)
-            
-            # YOLOv8 Vorhersage
-            results = yolo_model(image_array, conf=0.3, verbose=False)  # Confidence threshold 0.3
-            
-            # Erkannte Objekte verarbeiten
-            detected_objects = []
-            detected_ingredients = []
-            
-            for result in results:
-                if result.boxes is not None:
-                    for box in result.boxes:
-                        # Klassen-ID und Confidence extrahieren
-                        class_id = int(box.cls.item())
-                        confidence = float(box.conf.item())
-                        
-                        # Klassenname aus YOLO-Modell
-                        class_name = yolo_model.names[class_id] if class_id in yolo_model.names else f"Unknown_{class_id}"
-                        
-                        detected_objects.append({
-                            "class_id": class_id,
-                            "class_name": class_name,
-                            "confidence": confidence
-                        })
-                        
-                        # Deutsche Lebensmittel-Mappings anwenden
-                        if class_id in FOOD_CLASS_MAPPING:
-                            german_name = FOOD_CLASS_MAPPING[class_id]
-                            if german_name not in detected_ingredients:
-                                detected_ingredients.append(german_name)
-                                print(f"  ✅ Erkannt: {german_name} ({class_name}, {confidence:.2f})")
-            
-            # Erweiterte Lebensmittelerkennung basierend auf Kontext
-            # Wenn Küchenbjekte erkannt wurden, füge häufige Zutaten hinzu
-            kitchen_objects = ["fork", "knife", "spoon", "bowl", "cup", "bottle"]
-            has_kitchen_context = any(obj["class_name"] in kitchen_objects for obj in detected_objects)
-            
-            if has_kitchen_context and len(detected_ingredients) < 3:
-                # Füge einige häufige Zutaten basierend auf "Küchenkontext" hinzu
-                additional_ingredients = ["Zwiebeln", "Knoblauch", "Olivenöl"]
-                for ingredient in additional_ingredients:
-                    if ingredient not in detected_ingredients:
-                        detected_ingredients.append(ingredient)
-                print("  🍳 Küchenkontext erkannt - weitere Grundzutaten hinzugefügt")
-            
-            # Falls keine Lebensmittel erkannt wurden, aber das Bild gültig ist
-            if not detected_ingredients:
-                # Füge einige Standard-Lebensmittel basierend auf Bildeigenschaften hinzu
-                import random
-                random.seed(len(image_bytes))  # Konsistente "Erkennung" für gleiche Bilder
-                fallback_ingredients = random.sample(COMMON_GERMAN_INGREDIENTS[:15], 3)
-                detected_ingredients.extend(fallback_ingredients)
-                print("  ⚠️ Keine spezifischen Lebensmittel erkannt - Fallback zu häufigen Zutaten")
-            
-            print(f"🎯 Endgültige Ergebnisse: {len(detected_ingredients)} Zutaten erkannt")
-            
-            return {
-                "success": True,
-                "ingredients": detected_ingredients,
-                "message": f"YOLOv8: {len(detected_ingredients)} Zutaten erkannt",
-                "model_info": {
-                    "model": "YOLOv8n",
-                    "confidence_threshold": 0.3,
-                    "detected_objects_count": len(detected_objects)
-                },
-                "detected_objects": detected_objects[:10],  # Max 10 Objekte für Debug
-                "image_info": {
-                    "filename": image.filename,
-                    "size": len(image_bytes),
-                    "dimensions": f"{width}x{height}"
-                }
-            }
-            
-        except Exception as e:
-            print(f"❌ YOLOv8 Inferenz-Fehler: {str(e)}")
-            # Fallback zu Mock-Analyse
-            return await analyze_image_fallback(image_bytes, image.filename, width, height)
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        print(f"❌ Allgemeiner Fehler in Bildanalyse: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error analyzing image: {str(e)}")
-
-async def analyze_image_fallback(image_bytes: bytes, filename: str, width: int, height: int):
-    """
-    Fallback-Bildanalyse wenn YOLOv8 nicht funktioniert
-    """
-    file_size = len(image_bytes)
-    num_ingredients = min(6, max(3, (file_size // 50000) + 2))
-    
-    import random
-    random.seed(file_size)
-    detected_ingredients = random.sample(COMMON_GERMAN_INGREDIENTS, num_ingredients)
-    
-    print(f"  ⚠️ Fallback-Analyse für '{filename}': {detected_ingredients}")
-    
-    return {
-        "success": True,
-        "ingredients": detected_ingredients,
-        "message": f"Fallback-Analyse: {len(detected_ingredients)} Zutaten (YOLOv8 nicht verfügbar)",
-        "model_info": {
-            "model": "Fallback",
-            "note": "YOLOv8 nicht verfügbar - Mock-Analyse verwendet"
-        },
-        "image_info": {
-            "filename": filename,
-            "size": file_size,
-            "dimensions": f"{width}x{height}"
-        }
-    }
-
-@app.post("/analyze-image-test")
-async def analyze_image_test(image: UploadFile = File(...)):
-    """
-    Test-Endpoint für Bildanalyse ohne YOLOv8 (für Debugging)
-    """
-    try:
-        if not image.content_type.startswith('image/'):
-            raise HTTPException(status_code=400, detail="File must be an image")
-        
-        image_bytes = await image.read()
-        pil_image = Image.open(io.BytesIO(image_bytes))
-        width, height = pil_image.size
-        
-        return await analyze_image_fallback(image_bytes, image.filename, width, height)
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Test error: {str(e)}")
-
-@app.get("/recipes_by_ingredients")
-async def get_recipes_by_ingredients(ingredients: str):
-    """
-    Sucht Rezepte basierend auf verfügbaren Zutaten
-    Parameter: ingredients - Comma-separated string of ingredients
-    """
-    try:
-        if not ingredients or ingredients.strip() == "":
-            raise HTTPException(status_code=400, detail="No ingredients provided")
-        
-        # Zutaten-Liste verarbeiten
-        ingredient_list = [ing.strip() for ing in ingredients.split(',') if ing.strip()]
-        
-        if not ingredient_list:
-            raise HTTPException(status_code=400, detail="No valid ingredients provided")
-        
-        print(f"🔍 Suche Rezepte mit Zutaten: {ingredient_list}")
-        
         cursor = db.cursor()
         
-        # SQL Query um Rezepte zu finden, die mindestens eine der Zutaten enthalten
-        # Annahme: recipe_ingredients Tabelle hat eine 'ingredient_name' Spalte
-        placeholders = ', '.join(['%s'] * len(ingredient_list))
-        
-        query = f"""
-        SELECT DISTINCT rh.*
-        FROM recipe_header rh
-        INNER JOIN recipe_ingredients ri ON rh.recipe_id = ri.recipe_id
-        WHERE ri.ingredient_name IN ({placeholders})
-        ORDER BY rh.recipe_id
-        LIMIT 20
+        # SQL-Query zum Einfügen der Kontaktdaten
+        query = """
+        INSERT INTO contact_requests (name, email, subject, message, created_at, status)
+        VALUES (%s, %s, %s, %s, %s, %s)
         """
         
-        cursor.execute(query, ingredient_list)
-        result = cursor.fetchall()
+        values = (
+            contact_data.name,
+            contact_data.email,
+            contact_data.subject,
+            contact_data.message,
+            datetime.now(),
+            'neu'  # Status für neue Anfragen
+        )
+        
+        cursor.execute(query, values)
+        db.commit()
         cursor.close()
         
-        print(f"✅ {len(result)} Rezepte gefunden")
+        return True
+        
+    except Exception as e:
+        print(f"Fehler beim Speichern in der Datenbank: {str(e)}")
+        db.rollback()  # Rollback bei Fehlern
+        return False
+
+@app.post("/contact")
+def submit_contact_form(contact_data: ContactForm):
+    """
+    Endpoint für das Kontaktformular - speichert in Datenbank
+    """
+    try:
+        # In Datenbank speichern
+        saved = save_contact_to_db(contact_data)
+        
+        if not saved:
+            raise HTTPException(status_code=500, detail="Fehler beim Speichern der Kontaktanfrage")
         
         return {
-            "success": True,
-            "recipes": result,
-            "searched_ingredients": ingredient_list,
-            "count": len(result)
+            "status": "success",
+            "message": "Kontaktanfrage erfolgreich gespeichert. Wir melden uns bald bei Ihnen!"
         }
         
-    except HTTPException:
-        raise
     except Exception as e:
-        print(f"❌ Datenbankfehler in recipes_by_ingredients: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Fehler beim Verarbeiten der Anfrage: {str(e)}")
+
+@app.get("/contact-requests")
+def get_contact_requests():
+    """
+    Endpoint um alle Kontaktanfragen abzurufen (für Admin-Bereich)
+    """
+    try:
+        cursor = db.cursor()
+        cursor.execute("""
+            SELECT id, name, email, subject, message, created_at, status 
+            FROM contact_requests 
+            ORDER BY created_at DESC
+        """)
         
-        # Fallback: Alle Rezepte zurückgeben wenn Fehler auftritt
-        try:
-            cursor = db.cursor()
-            cursor.execute("SELECT * FROM recipe_header LIMIT 10")
-            result = cursor.fetchall()
+        # Spaltennamen für bessere Lesbarkeit
+        columns = ['id', 'name', 'email', 'subject', 'message', 'created_at', 'status']
+        result = []
+        
+        for row in cursor.fetchall():
+            row_dict = {}
+            for i, value in enumerate(row):
+                # Datetime-Objekte zu String konvertieren für JSON-Serialisierung
+                if isinstance(value, datetime):
+                    row_dict[columns[i]] = value.strftime("%d.%m.%Y %H:%M:%S")
+                else:
+                    row_dict[columns[i]] = value
+            result.append(row_dict)
+        
+        cursor.close()
+        return result
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Fehler beim Abrufen der Kontaktanfragen: {str(e)}")
+
+@app.put("/contact-requests/{request_id}/status")
+def update_contact_request_status(request_id: int, status_data: StatusUpdate):
+    """
+    Endpoint um den Status einer Kontaktanfrage zu ändern
+    """
+    try:
+        # Überprüfung der Datenbankverbindung
+        if not db.is_connected():
+            db.reconnect()
+            
+        cursor = db.cursor()
+        
+        # Gültige Status prüfen
+        valid_statuses = ['neu', 'in_bearbeitung', 'abgeschlossen']
+        if status_data.status not in valid_statuses:
+            raise HTTPException(status_code=400, detail=f"Ungültiger Status. Erlaubt: {valid_statuses}")
+        
+        cursor.execute(
+            "UPDATE contact_requests SET status = %s WHERE id = %s",
+            (status_data.status, request_id)
+        )
+        
+        if cursor.rowcount == 0:
             cursor.close()
-            
-            return {
-                "success": True,
-                "recipes": result,
-                "searched_ingredients": ingredient_list,
-                "count": len(result),
-                "note": "Fallback: Showing sample recipes due to search error"
-            }
+            raise HTTPException(status_code=404, detail="Kontaktanfrage nicht gefunden")
+        
+        db.commit()
+        cursor.close()
+        
+        return {
+            "status": "success",
+            "message": f"Status der Anfrage {request_id} wurde zu '{status_data.status}' geändert"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        try:
+            db.rollback()
         except:
-            raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-
-@app.get("/search_recipes_by_ingredients")
-async def search_recipes_by_ingredients(ingredients: str):
-    """
-    Alternative endpoint für Rezeptsuche mit erweiterter Logik
-    Sucht Rezepte, die die meisten der angegebenen Zutaten verwenden
-    """
-    try:
-        if not ingredients:
-            raise HTTPException(status_code=400, detail="No ingredients provided")
-        
-        ingredient_list = [ing.strip() for ing in ingredients.split(',') if ing.strip()]
-        
-        cursor = db.cursor()
-        
-        # Erweiterte Suche: Zähle wie viele gesuchte Zutaten in jedem Rezept vorkommen
-        placeholders = ', '.join(['%s'] * len(ingredient_list))
-        
-        query = f"""
-        SELECT 
-            rh.*,
-            COUNT(ri.ingredient_name) as matching_ingredients
-        FROM recipe_header rh
-        INNER JOIN recipe_ingredients ri ON rh.recipe_id = ri.recipe_id
-        WHERE LOWER(ri.ingredient_name) IN ({', '.join(['LOWER(%s)'] * len(ingredient_list))})
-        GROUP BY rh.recipe_id
-        ORDER BY matching_ingredients DESC, rh.recipe_id
-        LIMIT 15
-        """
-        
-        cursor.execute(query, ingredient_list + ingredient_list)
-        result = cursor.fetchall()
-        cursor.close()
-        
-        return {
-            "success": True,
-            "recipes": result,
-            "searched_ingredients": ingredient_list,
-            "count": len(result)
-        }
-        
-    except Exception as e:
-        print(f"❌ Fehler in search_recipes_by_ingredients: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Search error: {str(e)}")
-
-# ============= HILFSFUNKTIONEN UND DEBUG ENDPOINTS =============
-
-@app.get("/model/info")
-def get_model_info():
-    """
-    Gibt Informationen über das geladene YOLOv8 Modell zurück
-    """
-    if not YOLO_AVAILABLE:
-        return {
-            "model_available": False,
-            "error": "YOLOv8 nicht installiert",
-            "install_command": "pip install ultralytics"
-        }
-    
-    if yolo_model is None:
-        return {
-            "model_available": False,
-            "error": "YOLOv8 Modell konnte nicht geladen werden"
-        }
-    
-    try:
-        # Modell-Informationen sammeln
-        model_info = {
-            "model_available": True,
-            "model_type": "YOLOv8n",
-            "task": yolo_model.task,
-            "total_classes": len(yolo_model.names),
-            "food_classes_mapped": len(FOOD_CLASS_MAPPING),
-            "supported_food_classes": list(FOOD_CLASS_MAPPING.values()),
-            "device": str(yolo_model.device) if hasattr(yolo_model, 'device') else "unknown"
-        }
-        
-        return model_info
-        
-    except Exception as e:
-        return {
-            "model_available": False,
-            "error": f"Fehler beim Abrufen der Modellinformationen: {str(e)}"
-        }
-
-@app.get("/ingredients/list")
-def get_common_ingredients():
-    """
-    Gibt eine Liste aller verfügbaren Zutaten zurück
-    """
-    cursor = db.cursor()
-    try:
-        cursor.execute("SELECT DISTINCT ingredient_name FROM recipe_ingredients ORDER BY ingredient_name")
-        result = cursor.fetchall()
-        cursor.close()
-        
-        # Extrahiere nur die Namen aus den Tupeln
-        ingredient_names = [row[0] for row in result if row[0]]
-        
-        return {
-            "success": True,
-            "ingredients": ingredient_names,
-            "count": len(ingredient_names)
-        }
-    except Exception as e:
-        cursor.close()
-        # Fallback zu hardcoded Liste
-        return {
-            "success": True,
-            "ingredients": COMMON_GERMAN_INGREDIENTS,
-            "count": len(COMMON_GERMAN_INGREDIENTS),
-            "note": "Fallback list used"
-        }
-
-def extract_ingredients_from_text(text: str) -> list:
-    """
-    Hilfsfunktion zur Extraktion von Zutaten aus Text (wird nicht mehr verwendet)
-    """
-    found_ingredients = []
-    text_lower = text.lower()
-    
-    for ingredient in COMMON_GERMAN_INGREDIENTS:
-        if ingredient.lower() in text_lower:
-            found_ingredients.append(ingredient)
-    
-    return found_ingredients[:10]
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+            pass
+        raise HTTPException(status_code=500, detail=f"Fehler beim Aktualisieren: {str(e)}")

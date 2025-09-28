@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchData } from '../../RestAPI/api.js';
 import LoadingScreen from '../../Functions/LoadingScreen/LoadingScreen.js';
@@ -6,7 +6,7 @@ import './SearchRecipesMain.css';
 
 function SearchRecipesMain() {
     const { t } = useTranslation();
-    
+
     const [header_data, set_header_Data] = useState(null);
     const [ingredients_data, set_ingredients_Data] = useState(null);
     const [cookingsteps_data, set_cookingsteps_Data] = useState(null);
@@ -15,68 +15,28 @@ function SearchRecipesMain() {
     const [showData, setShowData] = useState(false);
     const [showLoadingScreen, setShowLoadingScreen] = useState(false);
     
-    // Neue States für Bild-Upload und KI-Analyse
+    // Neue States für KI-Zutatenerkennung
+    const [selectedAI, setSelectedAI] = useState('yolo');
     const [selectedImage, setSelectedImage] = useState(null);
     const [recognizedIngredients, setRecognizedIngredients] = useState([]);
-    const [showImageLoadingScreen, setShowImageLoadingScreen] = useState(false);
-    const [imagePreview, setImagePreview] = useState(null);
+    const [showImageAnalysis, setShowImageAnalysis] = useState(false);
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [availableModels, setAvailableModels] = useState({});
 
-    // Funktion für Bild-Upload
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setSelectedImage(file);
-            
-            // Bild-Vorschau erstellen
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setImagePreview(e.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+    // Lade verfügbare KI-Modelle beim Komponenten-Mount
+    useEffect(() => {
+        fetchAvailableModels();
+    }, []);
 
-    // Funktion für KI-Bildanalyse
-    const handleImageAnalysis = async () => {
-        if (!selectedImage) {
-            alert(t('searchRecipes.messages.noImageSelected'));
-            return;
-        }
-
-        setShowImageLoadingScreen(true);
-        setRecognizedIngredients([]);
-
-        const formData = new FormData();
-        formData.append('image', selectedImage);
-
+    const fetchAvailableModels = async () => {
         try {
-            const response = await fetch('http://localhost:8000/analyze-image', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                setRecognizedIngredients(result.ingredients || []);
-            } else {
-                console.error('Error analyzing image:', response.statusText);
-                alert(t('searchRecipes.messages.imageAnalysisError'));
-            }
+            const response = await fetchData('http://localhost:8000/available_ai_models');
+            setAvailableModels(response);
         } catch (error) {
-            console.error('Error:', error);
-            alert(t('searchRecipes.messages.imageAnalysisError'));
-        } finally {
-            setShowImageLoadingScreen(false);
+            console.error(t('ai.errors.loadingModels'), error);
         }
     };
 
-    // Funktion zum Entfernen einer erkannten Zutat
-    const removeIngredient = (index) => {
-        const updatedIngredients = recognizedIngredients.filter((_, i) => i !== index);
-        setRecognizedIngredients(updatedIngredients);
-    };
-
-    // Bestehende Funktion für Rezeptsuche
     const handleApiButtonClick = async () => {
         if (!buttonClicked) {
             setShowLoadingScreen(true);
@@ -126,131 +86,203 @@ function SearchRecipesMain() {
         }
     };
 
-    // Erweiterte Rezeptsuche basierend auf erkannten Zutaten
-    const handleIngredientBasedSearch = async () => {
-        if (recognizedIngredients.length === 0) {
-            alert(t('searchRecipes.messages.noIngredientsRecognized'));
+    const handleImageUpload = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setSelectedImage(file);
+            // Zeige Bildvorschau
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById('image-preview');
+                if (preview) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const analyzeIngredients = async () => {
+        if (!selectedImage) {
+            alert(t('ai.alerts.selectImageFirst'));
             return;
         }
 
-        setShowLoadingScreen(true);
-        setShowData(false);
-
-        const ingredientList = recognizedIngredients.join(',');
-        console.log('Searching recipes with ingredients:', ingredientList);
+        setIsAnalyzing(true);
+        setRecognizedIngredients([]);
 
         try {
-            var apiUrl_recipes = `http://localhost:8000/recipes_by_ingredients?ingredients=${encodeURIComponent(ingredientList)}`;
+            const formData = new FormData();
+            formData.append('file', selectedImage);
+            formData.append('ai_type', selectedAI);
 
-            await fetchData(apiUrl_recipes)
-                .then((responseData) => {
-                    console.log(responseData);
-                    // Das Backend gibt jetzt ein Objekt zurück mit recipes Array
-                    if (responseData.success && responseData.recipes) {
-                        set_header_Data(responseData.recipes);
-                    } else {
-                        set_header_Data(responseData);
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+            const response = await fetch('http://localhost:8000/analyze_ingredients', {
+                method: 'POST',
+                body: formData
+            });
 
-            setShowData(true);
+            if (response.ok) {
+                const result = await response.json();
+                setRecognizedIngredients(result.ingredients);
+                setShowImageAnalysis(true);
+            } else {
+                const error = await response.json();
+                console.error(t('ai.errors.imageAnalysis'), error);
+                alert(t('ai.alerts.imageAnalysisError') + error.detail);
+            }
         } catch (error) {
-            console.error('Error searching recipes:', error);
-            alert(t('searchRecipes.messages.searchError'));
+            console.error(t('ai.errors.networkError'), error);
+            alert(t('ai.alerts.networkError'));
         } finally {
-            setShowLoadingScreen(false);
+            setIsAnalyzing(false);
         }
+    };
+
+    const getModelStatusIcon = (modelName) => {
+        const isAvailable = availableModels.models && availableModels.models[modelName];
+        return isAvailable ? '✅' : '❌';
+    };
+
+    const getModelDescription = (modelName) => {
+        return availableModels.descriptions ? availableModels.descriptions[modelName] : '';
+    };
+
+    const getModelDisplayName = (modelName) => {
+        const displayNames = {
+            'yolo': 'YOLO v5',
+            'blip': 'BLIP',
+            'opencv': 'OpenCV',
+            'detectron2': 'Detectron2'
+        };
+        return displayNames[modelName] || modelName.toUpperCase();
     };
 
     return (
         <div className="body_SearchRecipesMain">
             <div className="Page_SearchRecipesMain">
-                {/* Bestehende Suchfunktion */}
+                
+                {/* Bestehende Rezept-Suche */}
                 <div className="search-container">
                     <input
                         type="text"
-                        placeholder={t('searchRecipes.placeholder.recipeId')}
+                        placeholder={t('searchRecipes.placeholder')}
                         value={variableValue}
                         onChange={(e) => setVariableValue(e.target.value)}
                     />
                     <button className='search-button-srm' onClick={handleApiButtonClick}>
-                        {t('searchRecipes.buttons.searchRecipes')}
+                        {t('searchRecipes.searchButton')}
                     </button>
                 </div>
 
-                {/* Neue Bild-Upload Sektion */}
-                <div className="image-upload-section">
+                {/* Erweiterte KI-Zutatenerkennung Sektion */}
+                <div className="ai-ingredients-section">
                     <div className="divStyle">
-                        {t('searchRecipes.sections.imageAnalysis')}
+                        {t('ai.title')}
                     </div>
                     
-                    <div className="search-container">
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            style={{ display: 'none' }}
-                            id="image-upload"
-                        />
-                        <label htmlFor="image-upload" className="search-button-srm" style={{ cursor: 'pointer', display: 'inline-block' }}>
-                            {t('searchRecipes.buttons.selectImage')}
-                        </label>
-                        
-                        {selectedImage && (
-                            <button className='search-button-srm' onClick={handleImageAnalysis}>
-                                {t('searchRecipes.buttons.analyzeImage')}
-                            </button>
-                        )}
+                    <div className="ai-selection-container">
+                        <label htmlFor="ai-select">{t('ai.selectModel')}</label>
+                        <select 
+                            id="ai-select"
+                            value={selectedAI} 
+                            onChange={(e) => setSelectedAI(e.target.value)}
+                            className="ai-dropdown"
+                        >
+                            <option value="yolo">
+                                {getModelStatusIcon('yolo')} {getModelDisplayName('yolo')} - {t('ai.models.yolo')}
+                            </option>
+                            <option value="blip">
+                                {getModelStatusIcon('blip')} {getModelDisplayName('blip')} - {t('ai.models.blip')}
+                            </option>
+                            <option value="opencv">
+                                {getModelStatusIcon('opencv')} {getModelDisplayName('opencv')} - {t('ai.models.opencv')}
+                            </option>
+                            <option value="detectron2">
+                                {getModelStatusIcon('detectron2')} {getModelDisplayName('detectron2')}
+                            </option>
+                        </select>
+                        <div className="model-description">
+                            {getModelDescription(selectedAI)}
+                        </div>
                     </div>
 
-                    {/* Bild-Vorschau */}
-                    {imagePreview && (
-                        <div className="image-preview" style={{ textAlign: 'center', margin: '20px 0' }}>
-                            <img 
-                                src={imagePreview} 
-                                alt="Preview" 
-                                style={{ maxWidth: '300px', maxHeight: '200px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
-                            />
-                        </div>
-                    )}
+                    <div className="image-upload-container">
+                        <label htmlFor="image-input">{t('ai.uploadImage')}</label>
+                        <input 
+                            type="file" 
+                            id="image-input"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="image-input"
+                        />
+                        <img 
+                            id="image-preview" 
+                            alt={t('ai.imagePreview')} 
+                            className="image-preview"
+                            style={{display: 'none'}}
+                        />
+                    </div>
 
-                    {/* Ladeanzeige für Bildanalyse */}
-                    {showImageLoadingScreen && (
+                    <button 
+                        className="analyze-button" 
+                        onClick={analyzeIngredients}
+                        disabled={isAnalyzing || !selectedImage}
+                    >
+                        {isAnalyzing ? (
+                            <>
+                                {t('ai.analyzing')}
+                                {selectedAI === 'detectron2' && ' (Detectron2 arbeitet...)'}
+                            </>
+                        ) : (
+                            <>
+                                {t('ai.recognizeIngredients')}
+                                {selectedAI === 'detectron2' && ' mit Detectron2'}
+                            </>
+                        )}
+                    </button>
+
+                    {isAnalyzing && (
                         <div className="loading-container">
                             <LoadingScreen />
-                            <p>{t('searchRecipes.messages.analyzingImage')}</p>
+                            {selectedAI === 'detectron2' && (
+                                <div style={{textAlign: 'center', marginTop: '10px', color: '#007BFF'}}>
+                                    Detectron2 führt erweiterte Objekterkennung durch...
+                                </div>
+                            )}
                         </div>
                     )}
 
-                    {/* Erkannte Zutaten */}
-                    {recognizedIngredients.length > 0 && (
+                    {showImageAnalysis && recognizedIngredients.length > 0 && (
                         <div className="recognized-ingredients">
-                            <h3>{t('searchRecipes.sections.recognizedIngredients')}</h3>
+                            <div className="divStyle">
+                                {t('ai.recognizedIngredients', { model: getModelDisplayName(selectedAI) })}
+                                {selectedAI === 'detectron2' && (
+                                    <div style={{fontSize: '14px', color: '#666', fontWeight: 'normal'}}>
+                                        (Mit Detectron2 Konfidenzwerten)
+                                    </div>
+                                )}
+                            </div>
                             <div className="ingredients-list">
                                 {recognizedIngredients.map((ingredient, index) => (
-                                    <span key={index} className="ingredient-tag">
+                                    <span 
+                                        key={index} 
+                                        className={`ingredient-tag ${selectedAI === 'detectron2' ? 'detectron2-tag' : ''}`}
+                                    >
                                         {ingredient}
-                                        <button 
-                                            className="remove-ingredient" 
-                                            onClick={() => removeIngredient(index)}
-                                            style={{ marginLeft: '5px', background: 'red', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer' }}
-                                        >
-                                            ×
-                                        </button>
                                     </span>
                                 ))}
                             </div>
-                            <button className='search-button-srm' onClick={handleIngredientBasedSearch} style={{ marginTop: '10px' }}>
-                                {t('searchRecipes.buttons.searchByIngredients')}
-                            </button>
+                            {selectedAI === 'detectron2' && recognizedIngredients.length > 0 && (
+                                <div style={{marginTop: '10px', fontSize: '12px', color: '#666', textAlign: 'center'}}>
+                                    Detectron2 zeigt Konfidenzwerte in Klammern an
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
 
-                {/* Bestehende Rezeptanzeige */}
+                {/* Bestehende Rezept-Anzeige */}
                 {showData ? (
                     <div>
                         <div className="divStyle">
@@ -280,7 +312,7 @@ function SearchRecipesMain() {
                                 </tbody>
                             </table>
                         ) : (
-                            <p className="no-data-text">{t('searchRecipes.messages.noData')}</p>
+                            <p className="no-data-text">{t('searchRecipes.noDataAvailable')}</p>
                         )}
                         <div className="divStyle">
                             {t('searchRecipes.sections.ingredients')}
@@ -291,7 +323,7 @@ function SearchRecipesMain() {
                                     <tr>
                                         <th>{t('searchRecipes.table.headers.recipeId')}</th>
                                         <th>{t('searchRecipes.table.headers.ingredient')}</th>
-                                        <th>{t('searchRecipes.table.headers.amount')}</th>
+                                        <th>{t('searchRecipes.table.headers.quantity')}</th>
                                         <th>{t('searchRecipes.table.headers.unit')}</th>
                                     </tr>
                                 </thead>
@@ -306,7 +338,7 @@ function SearchRecipesMain() {
                                 </tbody>
                             </table>
                         ) : (
-                            <p className="no-data-text">{t('searchRecipes.messages.noData')}</p>
+                            <p className="no-data-text">{t('searchRecipes.noDataAvailable')}</p>
                         )}
                         <div className="divStyle">
                             {t('searchRecipes.sections.steps')}
@@ -317,7 +349,7 @@ function SearchRecipesMain() {
                                     <tr>
                                         <th>{t('searchRecipes.table.headers.recipeId')}</th>
                                         <th>{t('searchRecipes.table.headers.stepId')}</th>
-                                        <th>{t('searchRecipes.table.headers.description')}</th>
+                                        <th>{t('searchRecipes.table.headers.stepDescription')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -331,7 +363,7 @@ function SearchRecipesMain() {
                                 </tbody>
                             </table>
                         ) : (
-                            <p className="no-data-text">{t('searchRecipes.messages.noData')}</p>
+                            <p className="no-data-text">{t('searchRecipes.noDataAvailable')}</p>
                         )}
                     </div>
                 ) : (

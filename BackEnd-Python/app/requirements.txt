@@ -1,0 +1,47 @@
+# FastAPI und Web-Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Datenbank
+mysql-connector-python==8.2.0
+
+# Bildverarbeitung
+Pillow==10.1.0
+opencv-python==4.8.1.78
+numpy==1.24.3
+
+# PyTorch für YOLO und andere Modelle
+torch==2.1.1
+torchvision==0.16.1
+torchaudio==2.1.1
+
+# TensorFlow (optional, falls TensorFlow-Modelle verwendet werden)
+tensorflow==2.15.0
+
+# Hugging Face Transformers für BLIP
+transformers==4.36.2
+accelerate==0.25.0
+
+# YOLO spezifische Abhängigkeiten
+ultralytics==8.0.228
+yolov5==7.0.13
+
+# Weitere Computer Vision Bibliotheken
+scikit-image==0.22.0
+matplotlib==3.8.2
+
+# Allgemeine Utility-Bibliotheken
+requests==2.31.0
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# Für bessere Performance (optional)
+# CUDA-Support für PyTorch (falls GPU verfügbar)
+# torch==2.1.1+cu118 -f https://download.pytorch.org/whl/cu118/torch_stable.html
+# torchvision==0.16.1+cu118 -f https://download.pytorch.org/whl/cu118/torch_stable.html
+
+# Entwicklungstools (optional)
+pytest==7.4.3
+black==23.11.0
+flake8==6.1.0

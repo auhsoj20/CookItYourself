@@ -54,42 +54,67 @@
   },
 
 
-  "searchRecipes": {
-      "placeholder": {
-        "recipeId": "Filter Rezept-ID"
-      },
-      "buttons": {
-        "searchRecipes": "Rezepte suchen",
-        "selectImage": "Bild auswählen",
-        "analyzeImage": "Bild analysieren",
-        "searchByIngredients": "Nach Zutaten suchen"
-      },
-      "sections": {
-        "characteristics": "Eigenschaften",
-        "ingredients": "Zutaten",
-        "steps": "Kochschritte",
-        "imageAnalysis": "Bild-Analyse",
-        "recognizedIngredients": "Erkannte Zutaten"
-      },
-      "table": {
-        "headers": {
-          "recipeId": "Rezept ID",
-          "title": "Titel",
-          "userId": "User ID",
-          "modificationDate": "Änderungsdatum",
-          "creationDate": "Erstellungsdatum",
-          "image": "Bild",
-          "description": "Beschreibung",
-          "ingredient": "Zutat",
-          "amount": "Menge",
-          "unit": "Einheit",
-          "stepId": "Schritt ID"
-        }
-      },
-      "messages": {
-        "noData": "Keine Daten vorhanden."
-      }
+"searchRecipes": {
+    "title": "Rezepte suchen",
+    "placeholder": "Filter Rezept-ID",
+    "searchButton": "Rezepte suchen",
+    "noDataAvailable": "Keine Daten vorhanden.",
+    "sections": {
+      "characteristics": "Merkmale",
+      "ingredients": "Zutaten",
+      "steps": "Schritte"
     },
+    "table": {
+      "headers": {
+        "recipeId": "Rezept ID",
+        "title": "Titel",
+        "userId": "User ID",
+        "modificationDate": "Änderungsdatum",
+        "creationDate": "Erstellungsdatum",
+        "image": "Bild",
+        "description": "Beschreibung",
+        "ingredient": "Zutat",
+        "quantity": "Menge",
+        "unit": "Einheit",
+        "stepId": "Schritt ID",
+        "stepDescription": "Beschreibung"
+      }
+    }
+  },
+
+   "ai": {
+    "title": "KI-Zutatenerkennung",
+    "selectModel": "KI-Modell auswählen:",
+    "uploadImage": "Bild hochladen:",
+    "imagePreview": "Bildvorschau",
+    "analyzing": "Analysiere...",
+    "recognizeIngredients": "Zutaten erkennen",
+    "recognizedIngredients": "Erkannte Zutaten",
+    "models": {
+      "yolo": "YOLO v5 - Objekterkennung",
+      "blip": "BLIP - Bildbeschreibung",
+      "opencv": "OpenCV - Farberkennung"
+    },
+    "alerts": {
+      "selectImageFirst": "Bitte wählen Sie zuerst ein Bild aus!",
+      "imageAnalysisError": "Fehler bei der Bildanalyse: ",
+      "networkError": "Netzwerkfehler bei der Bildanalyse"
+    },
+    "errors": {
+      "loadingModels": "Fehler beim Laden der verfügbaren Modelle:",
+      "imageAnalysis": "Fehler bei der Bildanalyse:",
+      "networkError": "Netzwerkfehler:"
+    }
+  },
+
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Ein Fehler ist aufgetreten",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen"
+  },
 
 
     "account": {
@@ -134,17 +159,39 @@
     "privacyPolicy": "Datenschutzerklärung"
   },
 
-  
   "contact": {
     "title": "Kontakt",
-    "name": "Name",
-    "email": "E-Mail-Adresse",
-    "message": "Nachricht",
-    "submit": "Absenden",
-    "messageSent": "Nachricht wurde gesendet:",
-    "namePlaceholder": "Ihr Name",
-    "emailPlaceholder": "ihre.email@beispiel.de",
-    "messagePlaceholder": "Ihre Nachricht hier eingeben..."
+    "description": "Haben Sie Fragen oder Anregungen? Schreiben Sie uns!",
+    "form": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Ihr vollständiger Name"
+      },
+      "email": {
+        "label": "E-Mail-Adresse",
+        "placeholder": "ihre.email@example.com"
+      },
+      "subject": {
+        "label": "Betreff",
+        "placeholder": "Worum geht es?"
+      },
+      "message": {
+        "label": "Nachricht",
+        "placeholder": "Ihre Nachricht an uns..."
+      },
+      "submit": "Nachricht senden",
+      "submitting": "Wird gesendet..."
+    },
+    "messages": {
+      "success": "Ihre Nachricht wurde erfolgreich gespeichert! Wir werden sie bearbeiten und uns bald bei Ihnen melden.",
+      "error": "Fehler beim Speichern der Nachricht. Bitte versuchen Sie es später noch einmal."
+    },
+    "info": {
+      "title": "Weitere Kontaktmöglichkeiten",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "address": "Adresse"
+    }
   }
     
     

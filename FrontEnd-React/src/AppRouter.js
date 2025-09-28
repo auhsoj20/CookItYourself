@@ -10,6 +10,7 @@ import Imprint from './Components/Pages/Imprint/ImprintMain.js';
 import PrivacyPolicy from './Components/Pages/PrivacyPolicy/PrivacyPolicyMain.js';
 import SearchRecipes from './Components/Pages/SearchRecipes/SearchRecipesMain.js';
 import UploadCreateRecipe from './Components/Pages/UploadCreateRecipe/UploadCreateRecipeMain.js';
+import AdminContactView from './Components/Pages/Admin/AdminContactView.js';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './i18n'; 
 
@@ -30,6 +31,7 @@ function AppRouter() {
                 <Route path="/Imprint" element={<Imprint />} />   
                 <Route path="/Contact" element={<Contact />} />
                 <Route path="/Privacy_policy" element={<PrivacyPolicy />} />
+                <Route path="/admin/contact" element={<AdminContactView />} />
                 <Route path="*" element={<NoPage />} />  
               </Routes>
             </div>

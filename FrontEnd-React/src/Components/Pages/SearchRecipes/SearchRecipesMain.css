@@ -1,6 +1,6 @@
 /* Hauptcontainer für den gesamten Inhalt */
 .body_SearchRecipesMain {
-    padding: 30px;
+    padding: 20px;
 }
 
 /* Stil für die Seite, die die Rezepte anzeigt */
@@ -9,7 +9,7 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.37);
-    max-width: 800px; /* Etwas breiter für Rezeptdarstellungen */
+    max-width: 1000px; /* Etwas breiter für die neuen KI-Funktionen */
     margin: auto;
 }
 
@@ -19,8 +19,6 @@
     justify-content: center;
     margin-bottom: 20px;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
 }
 
 .search-container button {
@@ -52,73 +50,159 @@
     text-align: center;
 }
 
-/* Neuer Stil für die Bild-Upload Sektion */
-.image-upload-section {
-    margin: 30px 0;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+/* === Neue Styles für KI-Zutatenerkennung === */
 
-.image-preview {
-    text-align: center;
-    margin: 20px 0;
-}
-
-/* Stil für die erkannten Zutaten */
-.recognized-ingredients {
-    margin: 20px 0;
-    padding: 15px;
+/* KI-Sektion Container */
+.ai-ingredients-section {
     background-color: #f0f8ff;
+    border: 2px solid #007BFF;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+/* KI-Auswahl Container */
+.ai-selection-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.ai-selection-container label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Dropdown für KI-Auswahl */
+.ai-dropdown {
+    padding: 10px;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: white;
+    cursor: pointer;
+    width: 100%;
+    max-width: 500px;
+}
+
+.ai-dropdown:focus {
+    outline: none;
+    border-color: #0056b3;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Modell-Beschreibung */
+.model-description {
+    font-style: italic;
+    color: #666;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Bild-Upload Container */
+.image-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.image-upload-container label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Datei-Input */
+.image-input {
+    padding: 10px;
+    border: 2px dashed #007BFF;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.image-input:hover {
+    background-color: #e9ecef;
+}
+
+/* Bildvorschau */
+.image-preview {
+    max-width: 300px;
+    max-height: 200px;
+    object-fit: contain;
+    border: 2px solid #ddd;
     border-radius: 8px;
-    border: 1px solid #007BFF;
+    margin-top: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.recognized-ingredients h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #007BFF;
-    text-align: center;
+/* Analyse-Button */
+.analyze-button {
+    padding: 12px 30px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
 }
 
+.analyze-button:hover:not(:disabled) {
+    background-color: #218838;
+}
+
+.analyze-button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+.analyze-button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+}
+
+/* Erkannte Zutaten Container */
+.recognized-ingredients {
+    background-color: #e8f5e8;
+    border: 2px solid #28a745;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+/* Zutaten-Liste */
 .ingredients-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 15px;
-    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
 }
 
+/* Einzelne Zutat-Tags */
 .ingredient-tag {
     background-color: #28a745;
     color: white;
-    padding: 5px 10px;
-    border-radius: 20px;
+    padding: 6px 12px;
+    border-radius: 15px;
     font-size: 14px;
-    display: inline-flex;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    display: inline-block;
+    transition: background-color 0.3s ease;
 }
 
-.remove-ingredient {
-    margin-left: 5px !important;
-    background: #dc3545 !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 50% !important;
-    width: 20px !important;
-    height: 20px !important;
-    cursor: pointer !important;
-    font-size: 12px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+.ingredient-tag:hover {
+    background-color: #218838;
+    cursor: default;
 }
 
-.remove-ingredient:hover {
-    background: #c82333 !important;
-}
+/* === Ende neue KI-Styles === */
 
 /* Allgemeine Stil für Tabellen */
 .tableStyle {
@@ -157,19 +241,12 @@
 /* Stil für die Ladeanzeige */
 .loading-container {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: auto; /* Höhe passt sich an den Inhalt an */
     min-height: 50px; /* Mindesthöhe, um Platz für die Ladeanzeige zu gewährleisten */
     padding: 20px 0; /* Abstand oben und unten, um den Container zentriert zu halten */
     background-color: #f9f9f9;
-}
-
-.loading-container p {
-    margin-top: 10px;
-    color: #666;
-    font-size: 16px;
 }
 
 /* Stil für den allgemeinen Button */
@@ -200,27 +277,33 @@
     margin: 20px 0;      /* Abstand oben und unten */
 }
 
-/* Responsive Design für kleinere Bildschirme */
+/* Responsive Design für mobile Geräte */
 @media (max-width: 768px) {
+    .Page_SearchRecipesMain {
+        max-width: 95%;
+        padding: 15px;
+    }
+    
+    .ai-selection-container,
+    .image-upload-container {
+        align-items: stretch;
+    }
+    
+    .ai-dropdown {
+        max-width: 100%;
+    }
+    
     .search-container {
         flex-direction: column;
+        gap: 10px;
     }
     
     .search-container input {
         width: 100%;
         max-width: 300px;
-        margin-bottom: 10px;
-    }
-    
-    .search-container button {
-        margin: 5px 0;
     }
     
     .ingredients-list {
-        justify-content: flex-start;
-    }
-    
-    .image-upload-section {
-        padding: 15px;
+        justify-content: center;
     }
 }
