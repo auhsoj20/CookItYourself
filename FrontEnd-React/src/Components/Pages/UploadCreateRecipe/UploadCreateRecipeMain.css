@@ -1,290 +1,657 @@
-/* UploadCreateRecipeMain.css - Mobile Optimiert */
-
+/**
+ * Äußerer Container - Haupt-Wrapper
+ * Fügt Padding und Mindesthöhe hinzu
+ */
 .body_UploadCreateRecipe {
     padding: 30px;
+    min-height: 100vh;
+    background-color: #f5f5f5;
 }
 
-@media (max-width: 768px) {
-    .body_UploadCreateRecipe {
-        padding: 15px;
-    }
+/**
+ * Innerer Container - Weißer Karten-Bereich
+ * Enthält das gesamte Formular
+ */
+.page_UploadCreateRecipe {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-/* Container für Input-Felder */
-.InputContainer {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    align-items: center;
-    margin: auto;
-}
-
-.ContainerDescription {
-    justify-content: center;
-    align-items: center;
-    height: 10vh;
-}
-
-/* Header-Spalten Breiten für Desktop */
-.HeaderDescription {
-    width: 35vh;
-}
-
-.HeaderName {
-    width: 10vh;
-}
-
-.HeaderPicture {
-    width: 20vh;
-}
-
-.RemoveRow {
-    width: 10vh;
-}
-
-.TitleUploadCreateRecipe {
+/**
+ * Haupt-Überschrift
+ */
+.title-upload-create-recipe {
     text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 32px;
+}
+
+/* ==========================================
+   REZEPTNAME SEKTION
+   ========================================== */
+
+/**
+ * Container für Rezeptname-Eingabe
+ * Hellblauer Hintergrund wie KI-Sektion in SearchRecipes
+ */
+.recipe-name-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #f0f8ff;
+    border-radius: 10px;
+    border: 2px solid #007bff;
+}
+
+/**
+ * Label für Rezeptname
+ */
+.recipe-name-label {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/**
+ * Eingabefeld für Rezeptname
+ * Volle Breite mit Focus-Effekt
+ */
+.recipe-name-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+.recipe-name-input:focus {
+    outline: none;
+    border-color: #007bff; /* Blauer Rand bei Focus */
+}
+
+/* ==========================================
+   SCHRITTE SEKTION
+   ========================================== */
+
+/**
+ * Container für alle Zubereitungsschritte
+ */
+.steps-section {
     margin-bottom: 30px;
 }
 
-.InputContainer input {
-    display: flex;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    width: 300px;
-    text-align: center;
-    align-items: center;
-}
-
-.page_UploadCreateRecipe {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.37);
-    max-width: 100vh;
-    margin: auto;
-}
-
-.page_UploadCreateRecipe h2 {
-    margin-bottom: 20px;
+/**
+ * Überschrift für Schritte-Bereich
+ */
+.steps-title {
+    font-size: 24px;
     color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
 }
 
-/* Desktop Tabelle */
+/* ==========================================
+   DESKTOP TABELLE
+   ========================================== */
+
+/**
+ * Haupt-Tabelle für Desktop-Ansicht
+ */
 .recipe-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
-.recipe-table th, 
-.recipe-table td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
+/**
+ * Tabellen-Header
+ * Blauer Hintergrund mit weißer Schrift
+ */
 .recipe-table th {
-    background-color: #f7f7f7;
+    background-color: #007bff;
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
 }
 
-/* Mobile Karten-Layout */
+/**
+ * Tabellen-Zellen
+ * Mittlere vertikale Ausrichtung für gleiche Höhe
+ */
+.recipe-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: middle; /* Wichtig für gleiche Höhe */
+}
+
+/* Spaltenbreiten */
+.step-column {
+    width: 80px;
+}
+
+.description-column {
+    width: 40%;
+}
+
+.images-column {
+    width: 40%;
+}
+
+.actions-column {
+    width: 100px;
+    text-align: center;
+}
+
+/**
+ * Schritt-Nummer Darstellung
+ */
+.step-number {
+    font-size: 20px;
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
+}
+
+/**
+ * Beschreibungs-Textarea
+ * Resizable vertikal
+ */
+.description-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    margin: 0;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+    vertical-align: top; /* Wichtig für gleiche Höhe */
+}
+
+.description-textarea:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* ==========================================
+   BILDER CONTAINER
+   ========================================== */
+
+/**
+ * Flex-Container für Bilder und "Hinzufügen"-Button
+ * align-items: flex-start sorgt für gleiche obere Ausrichtung
+ */
+.images-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start; /* Wichtig für gleiche Höhe */
+}
+
+/**
+ * Gemeinsame Eigenschaften für Bildvorschau und Button
+ * Sorgt für identische Größe und Ausrichtung
+ */
+.image-preview,
+.add-image-btn {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0; /* Gleicher Border für beide */
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+/**
+ * Bildvorschau Container
+ * Position relative für absolut positionierten Löschen-Button
+ */
+.image-preview {
+    position: relative;
+    overflow: hidden;
+}
+
+/**
+ * Button-spezifische Styles
+ * Gestrichelter Border in Blau
+ */
+.add-image-btn {
+    border-style: dashed;
+    border-color: #007bff;
+}
+
+/**
+ * Bild innerhalb der Vorschau
+ * object-fit: cover schneidet Bild zu
+ */
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/**
+ * Entfernen-Button auf Bild
+ * Absolut positioniert oben rechts
+ */
+.remove-image-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-image-btn:hover {
+    background-color: #c82333;
+}
+
+/* ==========================================
+   BILD HINZUFÜGEN BUTTON
+   ========================================== */
+
+/**
+ * "Bild hinzufügen" Button Layout
+ * Label als Button mit verstecktem Input
+ */
+.add-image-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: #f8f9fa;
+}
+
+.add-image-btn:hover {
+    background-color: #e7f1ff;
+    border-color: #0056b3;
+}
+
+/**
+ * SVG Icon im Button
+ */
+.add-image-btn svg {
+    width: 32px;
+    height: 32px;
+    color: #007bff;
+    margin-bottom: 5px;
+}
+
+/**
+ * Text unter dem Icon
+ */
+.add-image-btn span {
+    font-size: 11px;
+    color: #007bff;
+    text-align: center;
+    font-weight: 500;
+}
+
+/**
+ * Bilder-Zähler (z.B. "2/3")
+ * Zeigt aktuelle Anzahl / Maximum
+ */
+.image-counter {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #6c757d;
+    text-align: center;
+}
+
+/* ==========================================
+   ZEILE ENTFERNEN BUTTON
+   ========================================== */
+
+/**
+ * Löschen-Button für Tabellenzeilen
+ */
+.remove-row-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 15px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.remove-row-button:hover:not(:disabled) {
+    background-color: #c82333;
+}
+
+/**
+ * Disabled State (wenn nur ein Schritt vorhanden)
+ */
+.remove-row-button:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* ==========================================
+   MOBILE KARTEN LAYOUT
+   ========================================== */
+
+/**
+ * Container für Mobile-Karten
+ * Standardmäßig versteckt (display: none)
+ */
 .recipe-cards {
     display: none;
 }
 
+/**
+ * Einzelne Rezept-Karte (Mobile)
+ */
 .recipe-card {
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+/**
+ * Header der Karte
+ * Enthält Schritt-Nummer und Löschen-Button
+ */
 .recipe-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #dee2e6;
 }
 
 .recipe-card-step {
+    font-size: 20px;
     font-weight: bold;
-    font-size: 18px;
     color: #007bff;
 }
 
 .recipe-card-remove {
-    padding: 5px 10px;
-    font-size: 12px;
     background-color: #dc3545;
-    border-radius: 4px;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
 }
 
+/**
+ * Feld innerhalb der Karte (Label + Input)
+ */
 .recipe-card-field {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .recipe-card-field label {
     display: block;
-    margin-bottom: 5px;
     font-weight: bold;
     color: #333;
+    margin-bottom: 8px;
+    font-size: 16px;
 }
 
-.recipe-card-field input[type="text"],
 .recipe-card-field textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
+    min-height: 100px;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: inherit;
+    resize: vertical;
     box-sizing: border-box;
 }
 
-.recipe-card-field textarea {
-    resize: vertical;
-    min-height: 80px;
+.recipe-card-field textarea:focus {
+    outline: none;
+    border-color: #007bff;
 }
 
-.recipe-card-field input[type="file"] {
+/**
+ * Bilder-Container für Mobile
+ */
+.images-container-mobile {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/**
+ * Bildvorschau Mobile
+ */
+.image-preview-mobile {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #e0e0e0;
+}
+
+.image-preview-mobile img {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #f8f9fa;
+    height: 100%;
+    object-fit: cover;
 }
 
-.recipe-card-image {
-    margin-top: 10px;
+/**
+ * Entfernen-Button Mobile (größer für Touch)
+ */
+.remove-image-btn-mobile {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/**
+ * "Bild hinzufügen" Button Mobile
+ */
+.add-image-btn-mobile {
+    width: 100px;
+    height: 100px;
+    border: 2px dashed #007bff;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: white;
+}
+
+.add-image-btn-mobile svg {
+    width: 36px;
+    height: 36px;
+    color: #007bff;
+    margin-bottom: 5px;
+}
+
+.add-image-btn-mobile span {
+    font-size: 12px;
+    color: #007bff;
     text-align: center;
+    font-weight: 500;
 }
 
-.recipe-card-image img {
-    max-width: 100px;
-    height: auto;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* ==========================================
+   ACTION BUTTONS
+   ========================================== */
+
+/**
+ * Container für Action-Buttons am Ende
+ * Zentriert und mit Abstand
+ */
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 2px solid #e0e0e0;
 }
 
-/* Allgemeine Input-Styles */
-input[type="text"],
-textarea,
-input[type="file"] {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+/**
+ * Gemeinsame Styles für beide Action-Buttons
+ */
+.add-step-button,
+.submit-button {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-textarea {
-    resize: vertical;
-    min-height: 60px;
-}
-
-/* Button-Styles */
-button {
+/**
+ * "Schritt hinzufügen" Button
+ */
+.add-step-button {
     background-color: #007bff;
     color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
 }
 
-button:hover {
+.add-step-button:hover {
     background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
 }
 
-.UCRP_add_row_button {
-    margin-top: 10px;
-    margin-right: 10px;
-}
-
-.UCRP_remove_row_button {
-    background-color: #dc3545;
-    padding: 8px 12px;
-    font-size: 12px;
-}
-
-.UCRP_remove_row_button:hover {
-    background-color: #c82333;
-}
-
+/**
+ * "Rezept hochladen" Button (grün)
+ */
 .submit-button {
     background-color: #28a745;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
+    color: white;
 }
 
 .submit-button:hover {
     background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
 }
 
-.action-buttons {
-    text-align: center;
-    margin-top: 20px;
-}
+/* ==========================================
+   MOBILE RESPONSIVE STYLES
+   Breakpoint: 768px
+   ========================================== */
 
-img {
-    display: block;
-    margin-top: 10px;
-}
-
-/* Mobile Responsive Styles */
 @media (max-width: 768px) {
-    .page_UploadCreateRecipe {
-        max-width: 100%;
+    /**
+     * Reduziertes Padding auf Mobile
+     */
+    .body_UploadCreateRecipe {
         padding: 15px;
-        margin: 0;
     }
 
-    .TitleUploadCreateRecipe {
+    .page_UploadCreateRecipe {
+        padding: 20px;
+    }
+
+    /**
+     * Kleinere Überschriften
+     */
+    .title-upload-create-recipe {
         font-size: 24px;
         margin-bottom: 20px;
     }
 
-    /* Tabelle auf Mobile verstecken */
+    /**
+     * Anpassungen für Rezeptname-Sektion
+     */
+    .recipe-name-section {
+        padding: 15px;
+    }
+
+    .recipe-name-label {
+        font-size: 16px;
+    }
+
+    .recipe-name-input {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    /**
+     * Kleinere Schritte-Überschrift
+     */
+    .steps-title {
+        font-size: 20px;
+    }
+
+    /**
+     * Tabelle auf Mobile verstecken
+     */
     .recipe-table {
         display: none;
     }
 
-    /* Karten-Layout auf Mobile anzeigen */
+    /**
+     * Karten-Layout auf Mobile anzeigen
+     */
     .recipe-cards {
         display: block;
     }
 
-    .InputContainer {
-        margin-bottom: 10px;
-    }
-
-    .InputContainer input {
-        width: 100%;
-        max-width: none;
-    }
-
+    /**
+     * Action-Buttons vertikal stapeln
+     */
     .action-buttons {
-        position: sticky;
-        bottom: 0;
-        background-color: #f9f9f9;
-        padding: 15px 0;
-        border-top: 1px solid #ddd;
-        margin: 20px -15px -15px -15px;
+        flex-direction: column;
+        gap: 10px;
     }
 
-    .UCRP_add_row_button,
+    /**
+     * Buttons volle Breite auf Mobile
+     */
+    .add-step-button,
     .submit-button {
-        display: block;
-        width: 90%;
-        margin: 10px auto;
-        padding: 12px;
+        width: 100%;
+        padding: 14px;
     }
 }

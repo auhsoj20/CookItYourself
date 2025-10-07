@@ -17,40 +17,37 @@
 
 
   "uploadCreateRecipe": {
-    "title": "Rezepte Hochladen",
+    "title": "Rezept erstellen",
+    "recipeNameLabel": "Rezeptname",
+    "stepsTitle": "Zubereitungsschritte",
     "table": {
       "step": "Schritt",
-      "name": "Name",
       "description": "Beschreibung",
-      "image": "Bild"
-    },
-    "labels": {
-      "recipeName": "Rezeptname",
-      "description": "Beschreibung",
-      "uploadImage": "Bild hochladen"
-    },
-    "placeholders": {
-      "recipeName": "Rezeptname eingeben...",
-      "description": "Beschreibung eingeben..."
-    },
-    "buttons": {
-      "delete": "Löschen",
-      "addRow": "Zeile hinzufügen",
-      "addNewRecipeMobile": "Neues Rezept hinzufügen",
-      "uploadRecipes": "Rezepte hochladen"
+      "images": "Bilder",
+      "actions": "Aktionen"
     },
     "mobile": {
-      "step": "Schritt {{step}}"
+      "step": "Schritt",
+      "description": "Beschreibung",
+      "images": "Bilder"
     },
-    "alt": {
-      "recipe": "Rezept {{index}}"
+    "placeholders": {
+      "recipeName": "z.B. Spaghetti Carbonara",
+      "description": "Beschreiben Sie diesen Zubereitungsschritt..."
+    },
+    "buttons": {
+      "addImage": "Bild hinzufügen",
+      "removeImage": "Bild entfernen",
+      "addStep": "Schritt hinzufügen",
+      "deleteStep": "Schritt löschen",
+      "delete": "Löschen",
+      "uploadRecipe": "Rezept hochladen"
     },
     "validation": {
-      "emptyFields": "Bitte füllen Sie alle Felder aus!"
+      "recipeName": "Bitte geben Sie einen Rezeptnamen ein!",
+      "allFields": "Bitte füllen Sie alle Beschreibungsfelder aus!"
     },
-    "success": {
-      "uploaded": "Rezepte erfolgreich hochgeladen!"
-    }
+    "success": "Rezept erfolgreich hochgeladen!"
   },
 
 
@@ -191,6 +188,54 @@
       "email": "E-Mail",
       "phone": "Telefon",
       "address": "Adresse"
+    }
+  },
+
+  "admin": {
+    "title": "Kontaktanfragen Verwaltung",
+    "loading": "Lade Kontaktanfragen...",
+    "stats": {
+      "total": "Gesamt",
+      "new": "Neue",
+      "inProgress": "In Bearbeitung",
+      "completed": "Abgeschlossen"
+    },
+    "filter": {
+      "label": "Filter nach Status:",
+      "all": "Alle anzeigen"
+    },
+    "status": {
+      "neu": "Neu",
+      "in_bearbeitung": "In Bearbeitung",
+      "abgeschlossen": "Abgeschlossen"
+    },
+    "buttons": {
+      "refresh": "Aktualisieren"
+    },
+    "requestsList": {
+      "title": "Anfragen ({{count}})",
+      "noRequests": "Keine Anfragen gefunden."
+    },
+    "details": {
+      "title": "Anfrage Details",
+      "changeStatus": "Status ändern:",
+      "fields": {
+        "id": "ID",
+        "name": "Name",
+        "email": "E-Mail",
+        "subject": "Betreff",
+        "createdAt": "Eingegangen am",
+        "status": "Status",
+        "message": "Nachricht"
+      }
+    },
+    "errors": {
+      "loadError": "Fehler beim Laden der Kontaktanfragen",
+      "error": "Fehler",
+      "updateError": "Fehler beim Aktualisieren",
+      "unknownError": "Unbekannter Fehler",
+      "updateStatusError": "Fehler beim Aktualisieren des Status",
+      "networkError": "Netzwerkfehler beim Aktualisieren des Status"
     }
   }
     

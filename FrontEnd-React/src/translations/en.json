@@ -17,41 +17,38 @@
 
 
   "uploadCreateRecipe": {
-      "title": "Upload Recipes",
-      "table": {
-        "step": "Step",
-        "name": "Name",
-        "description": "Description",
-        "image": "Image"
-      },
-      "labels": {
-        "recipeName": "Recipe Name",
-        "description": "Description",
-        "uploadImage": "Upload Image"
-      },
-      "placeholders": {
-        "recipeName": "Enter recipe name...",
-        "description": "Enter description..."
-      },
-      "buttons": {
-        "delete": "Delete",
-        "addRow": "Add Row",
-        "addNewRecipeMobile": "Add New Recipe",
-        "uploadRecipes": "Upload Recipes"
-      },
-      "mobile": {
-        "step": "Step {{step}}"
-      },
-      "alt": {
-        "recipe": "Recipe {{index}}"
-      },
-      "validation": {
-        "emptyFields": "Please fill in all fields!"
-      },
-      "success": {
-        "uploaded": "Recipes uploaded successfully!"
-      }
+    "title": "Create Recipe",
+    "recipeNameLabel": "Recipe Name",
+    "stepsTitle": "Preparation Steps",
+    "table": {
+      "step": "Step",
+      "description": "Description",
+      "images": "Images",
+      "actions": "Actions"
     },
+    "mobile": {
+      "step": "Step",
+      "description": "Description",
+      "images": "Images"
+    },
+    "placeholders": {
+      "recipeName": "e.g. Spaghetti Carbonara",
+      "description": "Describe this preparation step..."
+    },
+    "buttons": {
+      "addImage": "Add Image",
+      "removeImage": "Remove Image",
+      "addStep": "Add Step",
+      "deleteStep": "Delete Step",
+      "delete": "Delete",
+      "uploadRecipe": "Upload Recipe"
+    },
+    "validation": {
+      "recipeName": "Please enter a recipe name!",
+      "allFields": "Please fill in all description fields!"
+    },
+    "success": "Recipe uploaded successfully!"
+  },
 
 
 "searchRecipes": {
@@ -194,5 +191,54 @@
       "phone": "Phone",
       "address": "Address"
     }
+  },
+
+"admin": {
+    "title": "Contact Requests Management",
+    "loading": "Loading contact requests...",
+    "stats": {
+      "total": "Total",
+      "new": "New",
+      "inProgress": "In Progress",
+      "completed": "Completed"
+    },
+    "filter": {
+      "label": "Filter by status:",
+      "all": "Show all"
+    },
+    "status": {
+      "neu": "New",
+      "in_bearbeitung": "In Progress",
+      "abgeschlossen": "Completed"
+    },
+    "buttons": {
+      "refresh": "Refresh"
+    },
+    "requestsList": {
+      "title": "Requests ({{count}})",
+      "noRequests": "No requests found."
+    },
+    "details": {
+      "title": "Request Details",
+      "changeStatus": "Change status:",
+      "fields": {
+        "id": "ID",
+        "name": "Name",
+        "email": "Email",
+        "subject": "Subject",
+        "createdAt": "Received on",
+        "status": "Status",
+        "message": "Message"
+      }
+    },
+    "errors": {
+      "loadError": "Error loading contact requests",
+      "error": "Error",
+      "updateError": "Error updating",
+      "unknownError": "Unknown error",
+      "updateStatusError": "Error updating status",
+      "networkError": "Network error while updating status"
+    }
   }
+
 }  
